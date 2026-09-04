@@ -1,0 +1,81 @@
+# [Q-TAP] Quantum Trading Analysis Protocol
+### 미국 S&P 500 및 한국 KOSPI 100 무인 전자동 퀀텀 트레이딩 분석 시스템
+
+정치·거시경제 이슈(Gate 0)부터 시장 전체 추세(Gate 1), 듀얼-호라이즌 스코어링(Gate 2), 정밀 진입 타이밍(Gate 3), 동적 리스크 관리(Gate 4)까지 사람의 수기 입력 없이 **100% 전자동 연계**로 작동하는 알고리즘 트레이딩 파이프라인입니다.
+
+---
+
+## 📌 주요 특징
+
+1. **Gate 0 (정치·거시 리스크 & 블랙아웃)**
+   - VIX 공포지수, 미 10년물 국채금리 급등, 원/달러 환율 쇼크 감지
+   - 주요 경제지표(FOMC 금리결정, CPI 등) 발표 전후 단기 진입 자동 동결 (Blackout)
+   - 실시간 글로벌 뉴스 RSS 자동 수집 및 키워드 감성 스코어링
+2. **Gate 1 (시장 레짐 필터)**
+   - S&P 500 / KOSPI 200일 이동평균선 기반 강세장/약세장 판정
+3. **Gate 2 (듀얼-호라이즌 스코어링)**
+   - **단기 (1일~2주)**: 거래대금 폭증(2.5배+), 외인/기관 쌍끌이 순매수, 볼린저 밴드 스퀴즈
+   - **중장기 (3개월~1년)**: ROE, Forward PER/PBR, 실적 성장성 기반 멀티팩터 분석
+4. **Gate 3 (정밀 타이밍 트리거)**
+   - VWAP(거래량 가중평균가) 상단 지지 확인 및 최적 진입가, 손절가, 목표가 산출
+5. **Gate 4 (동적 리스크 관리)**
+   - ATR 변동성 기반 포지션 사이징(투자 비중) 및 리스크 오프 국면 시 노출도 자동 축소
+6. **무인 자동 스케줄러 & 스마트폰 알림**
+   - 매일 오전 06:30 (미국장 마감) 및 08:30 (한국장 개장 전) 자동 실행
+   - 텔레그램 봇 연동으로 스마트폰에 분석 리포트 실시간 자동 발송
+
+---
+
+## 🚀 빠른 시작 가이드 (Quick Start)
+
+### 1. 즉시 수동 분석 실행
+```powershell
+# 전체 유니버스 분석 실행
+.venv\Scripts\python.exe main.py
+
+# 빠른 테스트 모드 (종목 샘플 테스트)
+.venv\Scripts\python.exe main.py --dry-run --sample 5
+```
+
+### 2. 무인 자동 스케줄러 가동 (상시 실행)
+```powershell
+# 매일 06:30, 08:30에 자동으로 분석을 수행하는 백그라운드 데몬 실행
+.venv\Scripts\python.exe src/scheduler.py
+```
+
+### 3. 스마트폰 텔레그램 알림 연동 방법 (선택 사항)
+1. 텔레그램 앱에서 `@BotFather`를 검색하여 `/newbot` 입력 후 안내에 따라 봇 생성 -> **API Token** 복사
+2. 텔레그램에서 `@userinfobot`을 검색하여 대화를 걸면 내 **ID (Chat ID)** 확인
+3. 프로젝트 루트의 `.env` 파일에 입력:
+   ```env
+   TELEGRAM_BOT_TOKEN="내_봇_토큰"
+   TELEGRAM_CHAT_ID="내_챗_아이디"
+   ```
+4. 이후부터 분석 리포트가 내 스마트폰 텔레그램으로 자동 전송됩니다.
+
+---
+
+## 📂 프로젝트 구조
+```
+퀀텀트레이딩/
+├── docs/
+│   └── trading_protocol.md     # 퀀텀 트레이딩 프로토콜 상세 명세서
+├── src/
+│   ├── config.py               # 설정 및 티커 유니버스 정의
+│   ├── data/
+│   │   ├── collector_macro.py  # 거시지표(VIX, 금리, 환율) 자동 수집기
+│   │   ├── collector_us.py     # 미국 S&P 500 시세/재무 수집기
+│   │   ├── collector_kr.py     # 한국 KOSPI 100 시세/수급 수집기
+│   │   └── collector_news.py   # 뉴스 RSS 및 감성 스코어러
+│   ├── engine/
+│   │   ├── gate0_macro_event.py # 정치·거시 리스크 판정 엔진
+│   │   ├── gate1_market_regime.py # 시장 추세 레짐 필터
+│   │   ├── gate2_screening.py   # 단기/중장기 팩터 스코어링
+│   │   ├── gate3_timing.py      # 정밀 진입 타이밍 산출
+│   │   └── gate4_risk.py        # 리스크 관리 및 포지션 사이징
+│   ├── notification/
+│   │   └── notifier.py         # 콘솔 리포트 및 텔레그램 알림
+│   └── scheduler.py            # 정기 자동 실행 스케줄러 데몬
+├── main.py                     # 파이프라인 메인 실행 파일
+└── pyproject.toml              # 프로젝트 환경 및 의존성
+```

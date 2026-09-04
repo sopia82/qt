@@ -1,0 +1,28 @@
+﻿# Environment & Secrets
+.env
+*.key
+*.pem
+*.secret
+
+# Virtual Environment
+.venv/
+venv/
+env/
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*.class
+*.so
+.pytest_cache/
+
+# Data & Logs
+data/cache/
+logs/
+*.log
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
