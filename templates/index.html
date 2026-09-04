@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Q-TAP Quantum Trading Terminal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #121826;
+            --bg-card: #182234;
+            --border-color: #26354d;
+            --accent-cyan: #00e5ff;
+            --accent-green: #00e676;
+            --accent-red: #ff5252;
+            --accent-gold: #ffd600;
+            --accent-purple: #7c4dff;
+            --text-main: #f0f4f8;
+            --text-muted: #8a99ad;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        .container { max-width: 1380px; margin: 0 auto; }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+
+        .logo-area { display: flex; align-items: center; gap: 14px; }
+        .logo-badge {
+            background: linear-gradient(135deg, #00e5ff, #7c4dff);
+            color: #000;
+            font-weight: 800;
+            font-size: 1.1rem;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .header-title h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; }
+        .header-title p { font-size: 0.85rem; color: var(--text-muted); margin-top: 2px; }
+
+        .btn-run {
+            background: linear-gradient(135deg, #00e5ff, #00b0ff);
+            color: #05101e;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(0, 229, 255, 0.25);
+        }
+        .btn-run:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 229, 255, 0.4); }
+        .btn-run:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; box-shadow: none; transform: none; }
+
+        /* Metric Grid */
+        .macro-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .metric-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .metric-card .title { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+        .metric-card .val { font-size: 1.6rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+        .metric-card .sub { font-size: 0.8rem; }
+
+        /* Badge Statuses */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .badge-green { background: rgba(0, 230, 118, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); }
+        .badge-yellow { background: rgba(255, 214, 0, 0.15); color: var(--accent-gold); border: 1px solid var(--accent-gold); }
+        .badge-red { background: rgba(255, 82, 82, 0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
+
+        /* Regime & Gate0 Box */
+        .regime-box {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 850px) { .regime-box { grid-template-columns: 1fr; } }
+        .regime-item h3 { font-size: 0.95rem; color: var(--accent-cyan); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .regime-item p { font-size: 0.85rem; color: var(--text-main); line-height: 1.5; }
+
+        /* Section Layout */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .section-header h2 { font-size: 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+
+        /* Stock Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+            margin-bottom: 36px;
+        }
+
+        .stock-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .stock-card:hover { transform: translateY(-3px); border-color: var(--accent-cyan); }
+        .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+        .stock-name { font-size: 1.1rem; font-weight: 700; }
+        .stock-ticker { font-size: 0.8rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+        .score-pill {
+            background: rgba(0, 229, 255, 0.15);
+            color: var(--accent-cyan);
+            border: 1px solid var(--accent-cyan);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .prices-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 12px;
+            text-align: center;
+            gap: 4px;
+        }
+        .price-col .label { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 2px; }
+        .price-col .price-val { font-size: 0.95rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+        .color-entry { color: var(--text-main); }
+        .color-stop { color: var(--accent-red); }
+        .color-target { color: var(--accent-green); }
+
+        .factors-list { font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; }
+        .factors-list li { list-style: none; margin-bottom: 4px; }
+        .factors-list li::before { content: "• "; color: var(--accent-cyan); }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(0,0,0,0.3);
+            border-radius: 50%;
+            border-top-color: #000;
+            animation: spin 0.8s ease-in-out infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        footer { text-align: center; padding-top: 24px; color: var(--text-muted); font-size: 0.8rem; border-top: 1px solid var(--border-color); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-area">
+                <div class="logo-badge">Q-TAP</div>
+                <div class="header-title">
+                    <h1>Quantum Trading Terminal</h1>
+                    <p>S&P 500 & KOSPI 100 듀얼-호라이즌 무인 자동 분석 시스템</p>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <span id="last-update" style="font-size: 0.8rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">-</span>
+                <button class="btn-run" id="btn-analyze" onclick="triggerAnalysis()">
+                    <span id="btn-icon">⚡</span>
+                    <span id="btn-text">지금 전체 분석 실행</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Macro Indicators Grid -->
+        <div class="macro-grid">
+            <div class="metric-card">
+                <div class="title">Gate 0 매크로 리스크</div>
+                <div class="val" id="macro-status">-</div>
+                <div class="sub" id="macro-status-sub">모니터링 대기</div>
+            </div>
+            <div class="metric-card">
+                <div class="title">VIX 공포지수</div>
+                <div class="val" id="vix-val">-</div>
+                <div class="sub" id="vix-sub">임계치 25.0 이하 정상</div>
+            </div>
+            <div class="metric-card">
+                <div class="title">뉴스 감성 지수 (NLP)</div>
+                <div class="val" id="sentiment-val">-</div>
+                <div class="sub" id="sentiment-sub">-1.0(비관) ~ +1.0(낙관)</div>
+            </div>
+            <div class="metric-card">
+                <div class="title">미 10년물 국채금리</div>
+                <div class="val" id="us10y-val">-</div>
+                <div class="sub" id="us10y-sub">주간 변동률 추적</div>
+            </div>
+            <div class="metric-card">
+                <div class="title">원/달러 환율</div>
+                <div class="val" id="usdkrw-val">-</div>
+                <div class="sub" id="usdkrw-sub">KOSPI 수급 연동</div>
+            </div>
+        </div>
+
+        <!-- Regime & Reasons Box -->
+        <div class="regime-box">
+            <div class="regime-item">
+                <h3><span>🌐</span> 시장 국면 (Market Regime)</h3>
+                <p id="regime-sp500" style="margin-bottom: 6px;">-</p>
+                <p id="regime-kospi">-</p>
+            </div>
+            <div class="regime-item">
+                <h3><span>🛡️</span> 리스크 & 뉴스 핵심 브리핑</h3>
+                <div id="risk-reasons" style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.6;">-</div>
+            </div>
+        </div>
+
+        <!-- Short Term Section -->
+        <div class="section-header">
+            <h2><span>⚡</span> 단기 포착 종목 (Tactical Picks: 1일 ~ 2주)</h2>
+            <span class="badge badge-yellow">거래대금 폭증 & 스마트머니 수급</span>
+        </div>
+        <div class="cards-grid" id="short-term-grid">
+            <!-- Dynamic cards -->
+        </div>
+
+        <!-- Long Term Section -->
+        <div class="section-header">
+            <h2><span>💎</span> 중장기 우량 종목 (Strategic Picks: 3개월 ~ 1년)</h2>
+            <span class="badge badge-green">고ROE & 밸류에이션 팩터 결합</span>
+        </div>
+        <div class="cards-grid" id="long-term-grid">
+            <!-- Dynamic cards -->
+        </div>
+
+        <footer>
+            Q-TAP Autonomous Trading Terminal &bull; Localhost Dashboard Mode &bull; Automated Pipeline
+        </footer>
+    </div>
+
+    <script>
+        function formatPrice(val, market) {
+            if (!val) return "-";
+            if (market === "KR_KOSPI") {
+                return Number(val).toLocaleString('ko-KR') + "원";
+            } else {
+                return "$" + Number(val).toFixed(2);
+            }
+        }
+
+        async function fetchStatus() {
+            try {
+                const resp = await fetch('/api/status');
+                const data = await resp.json();
+                renderData(data);
+            } catch (err) {
+                console.error("Error fetching status:", err);
+            }
+        }
+
+        function renderData(data) {
+            if (!data || !data.gate0) return;
+
+            // Timestamp
+            document.getElementById("last-update").innerText = "최근 분석: " + (data.timestamp || "방금 전");
+
+            // Gate 0
+            const g0 = data.gate0;
+            const statusEl = document.getElementById("macro-status");
+            const statusSubEl = document.getElementById("macro-status-sub");
+
+            const statusMap = {
+                "NORMAL": { text: "안정 (NORMAL)", color: "var(--accent-green)", badge: "badge-green" },
+                "CAUTION": { text: "경계 (CAUTION)", color: "var(--accent-gold)", badge: "badge-yellow" },
+                "BLACKOUT": { text: "이벤트 동결", color: "var(--accent-red)", badge: "badge-red" },
+                "CRITICAL_RISK_OFF": { text: "위험 회피", color: "var(--accent-red)", badge: "badge-red" }
+            };
+
+            const curStatus = statusMap[g0.status] || { text: g0.status, color: "var(--text-main)" };
+            statusEl.innerText = curStatus.text;
+            statusEl.style.color = curStatus.color;
+            statusSubEl.innerText = g0.allow_new_entries ? "신규 매수 허용 (비중 " + Math.round(g0.max_portfolio_exposure * 100) + "%)" : "신규 매수 금지";
+
+            document.getElementById("vix-val").innerText = g0.vix ? g0.vix.toFixed(2) : "-";
+            document.getElementById("sentiment-val").innerText = g0.sentiment_score !== undefined ? (g0.sentiment_score > 0 ? "+" : "") + g0.sentiment_score : "-";
+
+            // Macro details
+            if (data.macro_raw) {
+                const us10y = data.macro_raw.US_10Y;
+                if (us10y) document.getElementById("us10y-val").innerText = us10y.current + "%";
+                const usdkrw = data.macro_raw.USDKRW;
+                if (usdkrw) document.getElementById("usdkrw-val").innerText = usdkrw.current.toLocaleString() + "원";
+            }
+
+            // Gate 1 Regimes
+            const g1 = data.gate1 || {};
+            const usReg = g1.US_SP500 || {};
+            const krReg = g1.KR_KOSPI || {};
+            document.getElementById("regime-sp500").innerHTML = `<strong>미국 S&P 500:</strong> ${usReg.desc || '-'}`;
+            document.getElementById("regime-kospi").innerHTML = `<strong>한국 KOSPI:</strong> ${krReg.desc || '-'}`;
+
+            // Reasons
+            const reasonsEl = document.getElementById("risk-reasons");
+            reasonsEl.innerHTML = (g0.reasons || []).map(r => `<div>&bull; ${r}</div>`).join("");
+
+            // Render Cards
+            renderCards("short-term-grid", data.short_term_picks || [], "SHORT");
+            renderCards("long-term-grid", data.long_term_picks || [], "LONG");
+        }
+
+        function renderCards(containerId, picks, type) {
+            const container = document.getElementById(containerId);
+            if (!picks || picks.length === 0) {
+                container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 32px; background: var(--bg-card); border-radius: 12px; color: var(--text-muted);">현재 조건을 만족하는 추천 종목이 없습니다 (관망 구간)</div>`;
+                return;
+            }
+
+            container.innerHTML = picks.map(p => `
+                <div class="stock-card">
+                    <div class="card-top">
+                        <div>
+                            <div class="stock-name">${p.name}</div>
+                            <div class="stock-ticker">${p.market === "KR_KOSPI" ? "🇰🇷 KOSPI" : "🇺🇸 S&P 500"} &bull; ${p.ticker}</div>
+                        </div>
+                        <div class="score-pill">${p.score}점</div>
+                    </div>
+                    <div class="prices-grid">
+                        <div class="price-col">
+                            <div class="label">진입 권장가</div>
+                            <div class="price-val color-entry">${formatPrice(p.entry_price, p.market)}</div>
+                        </div>
+                        <div class="price-col">
+                            <div class="label">손절가</div>
+                            <div class="price-val color-stop">${formatPrice(p.stop_loss, p.market)}</div>
+                        </div>
+                        <div class="price-col">
+                            <div class="label">목표가</div>
+                            <div class="price-val color-target">${formatPrice(p.target_price, p.market)}</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 0.8rem; color: var(--text-muted);">
+                        <span>권장 포지션 비중: <strong style="color: var(--accent-cyan);">${p.alloc_pct}%</strong></span>
+                    </div>
+                    <ul class="factors-list">
+                        ${(p.factors || []).map(f => `<li>${f}</li>`).join("")}
+                    </ul>
+                </div>
+            `).join("");
+        }
+
+        async function triggerAnalysis() {
+            const btn = document.getElementById("btn-analyze");
+            const btnText = document.getElementById("btn-text");
+            const btnIcon = document.getElementById("btn-icon");
+
+            btn.disabled = true;
+            btnIcon.innerHTML = `<span class="spinner"></span>`;
+            btnText.innerText = "전체 데이터 분석 진행 중...";
+
+            try {
+                const resp = await fetch('/api/analyze', { method: 'POST' });
+                const data = await resp.json();
+                renderData(data);
+            } catch (err) {
+                alert("분석 도중 오류가 발생했습니다: " + err);
+            } finally {
+                btn.disabled = false;
+                btnIcon.innerHTML = `⚡`;
+                btnText.innerText = "지금 전체 분석 실행";
+            }
+        }
+
+        // Auto load on start
+        fetchStatus();
+    </script>
+</body>
+</html>
