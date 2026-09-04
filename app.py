@@ -17,26 +17,38 @@ if sys.platform == "win32":
 from main import run_pipeline
 
 app = Flask(__name__)
-CACHE_FILE = "data/cache/latest_analysis.json"
+
+IS_VERCEL = bool(os.environ.get("VERCEL"))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CACHE_FILE = "/tmp/latest_analysis.json" if IS_VERCEL else os.path.join(BASE_DIR, "data", "cache", "latest_analysis.json")
+BUNDLED_FILE = os.path.join(BASE_DIR, "data", "default_analysis.json")
+
 cached_result = None
 
 def load_cached_analysis():
     global cached_result
-    if os.path.exists(CACHE_FILE):
-        try:
-            with open(CACHE_FILE, "r", encoding="utf-8") as f:
-                cached_result = json.load(f)
-                return cached_result
-        except Exception:
-            pass
+    candidates = [
+        CACHE_FILE,
+        BUNDLED_FILE,
+        os.path.join(BASE_DIR, "data", "cache", "latest_analysis.json")
+    ]
+    for path in candidates:
+        if os.path.exists(path):
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    cached_result = json.load(f)
+                    return cached_result
+            except Exception:
+                pass
     return None
 
 def save_analysis(data):
     global cached_result
     cached_result = data
-    os.makedirs("data/cache", exist_ok=True)
+    target_dir = os.path.dirname(CACHE_FILE)
+    if target_dir:
+        os.makedirs(target_dir, exist_ok=True)
     try:
-        # Filter out non-serializable elements
         serializable = {
             "gate0": data.get("gate0", {}),
             "gate1": data.get("gate1", {}),

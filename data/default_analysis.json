@@ -1,0 +1,400 @@
+{
+  "gate0": {
+    "status": "CAUTION",
+    "allow_new_entries": true,
+    "max_portfolio_exposure": 0.6,
+    "reasons": [
+      "정치/경제 뉴스 감성 악화(Score: -1.0) - 무역/전쟁/규제 이슈 주의"
+    ],
+    "vix": 14.32,
+    "sentiment_score": -1.0
+  },
+  "gate1": {
+    "US_SP500": {
+      "regime": "BEAR_DOWNTREND",
+      "price": 7747.71,
+      "sma_50": 7584.49,
+      "sma_200": 7747.71,
+      "desc": "S&P 500 200일선 하회 (약세장 경계 - 롱 진입 축소)"
+    },
+    "KR_KOSPI": {
+      "regime": "BEAR_DOWNTREND",
+      "price": 6687.21,
+      "sma_50": 6951.02,
+      "sma_200": 6687.21,
+      "desc": "KOSPI 주요 이평선 하회 (단기 수급 집중주만 선별 대응)"
+    }
+  },
+  "macro_data": {
+    "VIX": {
+      "current": 14.32,
+      "chg_1d_pct": -5.79,
+      "chg_5d_pct": -0.76
+    },
+    "SP500": {
+      "current": 7747.71,
+      "chg_1d_pct": 1.06,
+      "chg_5d_pct": 0.47
+    },
+    "KOSPI": {
+      "current": 6687.21,
+      "chg_1d_pct": 1.64,
+      "chg_5d_pct": -1.95
+    },
+    "US_10Y": {
+      "current": 4.76,
+      "chg_1d_pct": -0.71,
+      "chg_5d_pct": 0.89
+    },
+    "USDKRW": {
+      "current": 1351.38,
+      "chg_1d_pct": -0.52,
+      "chg_5d_pct": -1.87
+    },
+    "WTI": {
+      "current": 91.66,
+      "chg_1d_pct": 0.39,
+      "chg_5d_pct": 6.88
+    },
+    "DXY": {
+      "current": 28.01,
+      "chg_1d_pct": -0.57,
+      "chg_5d_pct": -0.6
+    }
+  },
+  "short_term_picks": [
+    {
+      "market": "KR_KOSPI",
+      "ticker": "373220",
+      "name": "LG에너지솔루션",
+      "score": 40,
+      "entry_price": 358500.0,
+      "stop_loss": 325446.0,
+      "target_price": 437830.0,
+      "alloc_pct": 3.2,
+      "strategy_type": "모멘텀 추세추종 돌파",
+      "hurst_exponent": 0.427,
+      "ou_z_score": -0.79,
+      "ou_half_life": 17.7,
+      "win_prob_pct": 63.3,
+      "expected_value_pct": 115.22,
+      "var_99": -9.22,
+      "factors": [
+        "기관·외인 동시 순유입 (스마트 머니 쌍끌이 누적)"
+      ]
+    },
+    {
+      "market": "US_SP500",
+      "ticker": "NVDA",
+      "name": "NVIDIA Corporation",
+      "score": 20,
+      "entry_price": 228.45,
+      "stop_loss": 212.69,
+      "target_price": 266.27,
+      "alloc_pct": 4.3,
+      "strategy_type": "모멘텀 추세추종 돌파",
+      "hurst_exponent": 0.383,
+      "ou_z_score": 3.12,
+      "ou_half_life": 60.0,
+      "win_prob_pct": 56.7,
+      "expected_value_pct": 92.78,
+      "var_99": -6.9,
+      "factors": [
+        "RSI 최적 가속 구간 (RSI 52.32)"
+      ]
+    },
+    {
+      "market": "US_SP500",
+      "ticker": "AAPL",
+      "name": "Apple Inc.",
+      "score": 10,
+      "entry_price": 328.21,
+      "stop_loss": 311.37,
+      "target_price": 368.63,
+      "alloc_pct": 5.1,
+      "strategy_type": "모멘텀 추세추종 돌파",
+      "hurst_exponent": 0.409,
+      "ou_z_score": 1.08,
+      "ou_half_life": 60.0,
+      "win_prob_pct": 53.3,
+      "expected_value_pct": 81.22,
+      "var_99": -5.13,
+      "factors": []
+    },
+    {
+      "market": "US_SP500",
+      "ticker": "MSFT",
+      "name": "Microsoft Corporation",
+      "score": 10,
+      "entry_price": 510.12,
+      "stop_loss": 485.28,
+      "target_price": 569.74,
+      "alloc_pct": 5.4,
+      "strategy_type": "모멘텀 추세추종 돌파",
+      "hurst_exponent": 0.504,
+      "ou_z_score": 1.37,
+      "ou_half_life": 60.0,
+      "win_prob_pct": 53.3,
+      "expected_value_pct": 81.22,
+      "var_99": -4.87,
+      "factors": [
+        "허스트 H=0.504 (랜덤워크 국면 - 통계적 우위 부재)",
+        "RSI 최적 가속 구간 (RSI 59.36)"
+      ]
+    },
+    {
+      "market": "US_SP500",
+      "ticker": "AMZN",
+      "name": "Amazon.com, Inc.",
+      "score": 10,
+      "entry_price": 258.9,
+      "stop_loss": 244.84,
+      "target_price": 292.64,
+      "alloc_pct": 5.0,
+      "strategy_type": "모멘텀 추세추종 돌파",
+      "hurst_exponent": 0.446,
+      "ou_z_score": 1.95,
+      "ou_half_life": 32.0,
+      "win_prob_pct": 53.3,
+      "expected_value_pct": 81.22,
+      "var_99": -5.43,
+      "factors": []
+    },
+    {
+      "market": "KR_KOSPI",
+      "ticker": "000660",
+      "name": "SK하이닉스",
+      "score": 10,
+      "entry_price": 1647000.0,
+      "stop_loss": 1444419.0,
+      "target_price": 2133194.0,
+      "alloc_pct": 2.0,
+      "strategy_type": "모멘텀 추세추종 돌파",
+      "hurst_exponent": 0.57,
+      "ou_z_score": -0.3,
+      "ou_half_life": 60.0,
+      "win_prob_pct": 53.3,
+      "expected_value_pct": 81.22,
+      "var_99": -12.3,
+      "factors": [
+        "RSI 최적 가속 구간 (RSI 50.15)"
+      ]
+    },
+    {
+      "market": "KR_KOSPI",
+      "ticker": "207940",
+      "name": "삼성바이오로직스",
+      "score": 10,
+      "entry_price": 1447000.0,
+      "stop_loss": 1347012.0,
+      "target_price": 1686971.0,
+      "alloc_pct": 3.1,
+      "strategy_type": "모멘텀 추세추종 돌파",
+      "hurst_exponent": 0.422,
+      "ou_z_score": -3.25,
+      "ou_half_life": 18.1,
+      "win_prob_pct": 53.3,
+      "expected_value_pct": 81.22,
+      "var_99": -6.91,
+      "factors": []
+    },
+    {
+      "market": "KR_KOSPI",
+      "ticker": "005930",
+      "name": "삼성전자",
+      "score": 0,
+      "entry_price": 255500.0,
+      "stop_loss": 228443.0,
+      "target_price": 320437.0,
+      "alloc_pct": 2.0,
+      "strategy_type": "모멘텀 추세추종 돌파",
+      "hurst_exponent": 0.502,
+      "ou_z_score": -1.82,
+      "ou_half_life": 60.0,
+      "win_prob_pct": 46.7,
+      "expected_value_pct": 58.78,
+      "var_99": -10.59,
+      "factors": [
+        "허스트 H=0.502 (랜덤워크 국면 - 통계적 우위 부재)"
+      ]
+    }
+  ],
+  "long_term_picks": [
+    {
+      "market": "US_SP500",
+      "ticker": "NVDA",
+      "name": "NVIDIA Corporation",
+      "score": 85,
+      "entry_price": 228.45,
+      "stop_loss": 206.94,
+      "target_price": 297.28,
+      "alloc_pct": 9.0,
+      "strategy_type": "파마-프렌치 멀티팩터 가치성장",
+      "parkinson_vol_pct": 26.9,
+      "carhart_mom_pct": 27.74,
+      "roe_pct": 117.2,
+      "forward_pe": 14.8,
+      "win_prob_pct": 76.3,
+      "expected_value_pct": 220.46,
+      "factors": [
+        "최상위 수익성 팩터 (ROE 117.2%)",
+        "적정 밸류에이션 (이익수익률 6.8%)",
+        "강력한 카하트 중기 모멘텀 (+27.74%)"
+      ]
+    },
+    {
+      "market": "KR_KOSPI",
+      "ticker": "005930",
+      "name": "삼성전자",
+      "score": 80,
+      "entry_price": 255500.0,
+      "stop_loss": 229950.0,
+      "target_price": 337260.0,
+      "alloc_pct": 5.7,
+      "strategy_type": "파마-프렌치 멀티팩터 가치성장",
+      "parkinson_vol_pct": 49.6,
+      "carhart_mom_pct": 226.88,
+      "roe_pct": 30.8,
+      "forward_pe": 3.7,
+      "win_prob_pct": 74.9,
+      "expected_value_pct": 214.58,
+      "factors": [
+        "최상위 수익성 팩터 (ROE 30.8%)",
+        "깊은 저평가 밸류 (이익수익률 27.2%, PER 3.7배)",
+        "강력한 카하트 중기 모멘텀 (+226.88%)",
+        "고변동성 자산 (연환산 49.6%)"
+      ]
+    },
+    {
+      "market": "KR_KOSPI",
+      "ticker": "000660",
+      "name": "SK하이닉스",
+      "score": 80,
+      "entry_price": 1647000.0,
+      "stop_loss": 1482300.0,
+      "target_price": 2174040.0,
+      "alloc_pct": 4.9,
+      "strategy_type": "파마-프렌치 멀티팩터 가치성장",
+      "parkinson_vol_pct": 57.7,
+      "carhart_mom_pct": 498.11,
+      "roe_pct": 92.7,
+      "forward_pe": 3.5,
+      "win_prob_pct": 74.9,
+      "expected_value_pct": 214.58,
+      "factors": [
+        "최상위 수익성 팩터 (ROE 92.7%)",
+        "깊은 저평가 밸류 (이익수익률 28.3%, PER 3.5배)",
+        "강력한 카하트 중기 모멘텀 (+498.11%)",
+        "고변동성 자산 (연환산 57.7%)"
+      ]
+    },
+    {
+      "market": "US_SP500",
+      "ticker": "AAPL",
+      "name": "Apple Inc.",
+      "score": 75,
+      "entry_price": 328.21,
+      "stop_loss": 305.26,
+      "target_price": 401.65,
+      "alloc_pct": 9.0,
+      "strategy_type": "파마-프렌치 멀티팩터 가치성장",
+      "parkinson_vol_pct": 20.0,
+      "carhart_mom_pct": 30.66,
+      "roe_pct": 148.8,
+      "forward_pe": 34.4,
+      "win_prob_pct": 73.4,
+      "expected_value_pct": 208.28,
+      "factors": [
+        "최상위 수익성 팩터 (ROE 148.8%)",
+        "강력한 카하트 중기 모멘텀 (+30.66%)",
+        "파킨슨 저변동성 우량주 (연환산 변동성 20.0%)"
+      ]
+    },
+    {
+      "market": "US_SP500",
+      "ticker": "MSFT",
+      "name": "Microsoft Corporation",
+      "score": 68,
+      "entry_price": 510.12,
+      "stop_loss": 476.66,
+      "target_price": 617.19,
+      "alloc_pct": 9.0,
+      "strategy_type": "파마-프렌치 멀티팩터 가치성장",
+      "parkinson_vol_pct": 18.7,
+      "carhart_mom_pct": -0.97,
+      "roe_pct": 34.0,
+      "forward_pe": 21.6,
+      "win_prob_pct": 71.4,
+      "expected_value_pct": 199.88,
+      "factors": [
+        "최상위 수익성 팩터 (ROE 34.0%)",
+        "적정 밸류에이션 (이익수익률 4.6%)",
+        "파킨슨 저변동성 우량주 (연환산 변동성 18.7%)"
+      ]
+    },
+    {
+      "market": "US_SP500",
+      "ticker": "AMZN",
+      "name": "Amazon.com, Inc.",
+      "score": 65,
+      "entry_price": 258.9,
+      "stop_loss": 240.57,
+      "target_price": 317.56,
+      "alloc_pct": 9.0,
+      "strategy_type": "파마-프렌치 멀티팩터 가치성장",
+      "parkinson_vol_pct": 20.2,
+      "carhart_mom_pct": 15.52,
+      "roe_pct": 30.6,
+      "forward_pe": 24.9,
+      "win_prob_pct": 70.6,
+      "expected_value_pct": 196.52,
+      "factors": [
+        "최상위 수익성 팩터 (ROE 30.6%)",
+        "양호한 카하트 모멘텀 (+15.52%)",
+        "파킨슨 저변동성 우량주 (연환산 변동성 20.2%)"
+      ]
+    },
+    {
+      "market": "KR_KOSPI",
+      "ticker": "207940",
+      "name": "삼성바이오로직스",
+      "score": 32,
+      "entry_price": 1447000.0,
+      "stop_loss": 1302300.0,
+      "target_price": 1910040.0,
+      "alloc_pct": 6.3,
+      "strategy_type": "파마-프렌치 멀티팩터 가치성장",
+      "parkinson_vol_pct": 32.6,
+      "carhart_mom_pct": -4.4,
+      "roe_pct": 18.5,
+      "forward_pe": 29.5,
+      "win_prob_pct": 61.1,
+      "expected_value_pct": 156.62,
+      "factors": [
+        "안정적 수익성 팩터 (ROE 18.5%)"
+      ]
+    },
+    {
+      "market": "KR_KOSPI",
+      "ticker": "373220",
+      "name": "LG에너지솔루션",
+      "score": 0,
+      "entry_price": 358500.0,
+      "stop_loss": 322650.0,
+      "target_price": 473220.0,
+      "alloc_pct": 3.0,
+      "strategy_type": "파마-프렌치 멀티팩터 가치성장",
+      "parkinson_vol_pct": 44.7,
+      "carhart_mom_pct": -6.12,
+      "roe_pct": -5.2,
+      "forward_pe": 45.9,
+      "win_prob_pct": 48.0,
+      "expected_value_pct": 101.6,
+      "factors": [
+        "음(-)의 ROE 페널티",
+        "고변동성 자산 (연환산 44.7%)"
+      ]
+    }
+  ],
+  "timestamp": "2026-09-04 16:15:27"
+}
