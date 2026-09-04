@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Q-TAP Quantitative Financial Intelligence Terminal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #070b12;
+            --bg-surface: #0e1626;
+            --bg-card: #131f37;
+            --bg-card-hover: #1b2c4e;
+            --border-color: #1e2e4a;
+            --border-highlight: #2d436b;
+            --accent-cyan: #00e5ff;
+            --accent-green: #00e676;
+            --accent-red: #ff5252;
+            --accent-gold: #ffd600;
+            --accent-purple: #a78bfa;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 12px 18px;
+            font-size: 13px;
+        }
+
+        .terminal-container {
+            max-width: 1620px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Top Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 10px 16px;
+        }
+
+        .brand-area { display: flex; align-items: center; gap: 12px; }
+        .logo-tag {
+            background: linear-gradient(135deg, #00e5ff, #818cf8);
+            color: #030712;
+            font-weight: 800;
+            font-size: 0.82rem;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .brand-title { font-size: 1.15rem; font-weight: 800; }
+        .brand-sub { font-size: 0.75rem; color: var(--text-secondary); margin-left: 6px; font-family: 'JetBrains Mono', monospace; }
+
+        .header-actions { display: flex; align-items: center; gap: 12px; }
+        .update-pill {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.74rem;
+            color: var(--text-secondary);
+            background: rgba(30, 41, 59, 0.6);
+            padding: 5px 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-run {
+            background: linear-gradient(135deg, #00e5ff, #0284c7);
+            color: #030712;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+        .btn-run:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0, 229, 255, 0.35); }
+        .btn-run:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
+
+        /* Ticker Tape Bar */
+        .ticker-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 8px;
+        }
+
+        .ticker-item {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .ticker-meta .title { font-size: 0.68rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 2px; }
+        .ticker-meta .sub { font-size: 0.68rem; color: var(--text-secondary); }
+        .ticker-val { text-align: right; font-family: 'JetBrains Mono', monospace; }
+        .ticker-val .num { font-size: 1.05rem; font-weight: 700; }
+        .ticker-val .chg { font-size: 0.7rem; font-weight: 600; }
+
+        /* Color classes */
+        .val-up { color: var(--accent-green); }
+        .val-down { color: var(--accent-red); }
+        .val-cyan { color: var(--accent-cyan); }
+        .val-gold { color: var(--accent-gold); }
+
+        /* Gate 0 & Regime Bar */
+        .status-summary-bar {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 16px;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            gap: 16px;
+        }
+        @media (max-width: 960px) { .status-summary-bar { grid-template-columns: 1fr; } }
+
+        .gate0-badge-area { display: flex; align-items: center; gap: 8px; }
+        .gate0-badge {
+            padding: 3px 9px;
+            border-radius: 5px;
+            font-size: 0.74rem;
+            font-weight: 800;
+        }
+        .badge-normal { background: rgba(0, 230, 118, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); }
+        .badge-caution { background: rgba(255, 214, 0, 0.15); color: var(--accent-gold); border: 1px solid var(--accent-gold); }
+        .badge-blackout { background: rgba(255, 82, 82, 0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
+
+        .market-regime-tags { display: flex; align-items: center; gap: 10px; font-size: 0.76rem; }
+        .regime-tag { background: var(--bg-card); padding: 4px 8px; border-radius: 5px; border: 1px solid var(--border-highlight); }
+
+        .filter-buttons { display: flex; gap: 6px; }
+        .btn-filter {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.74rem;
+            font-weight: 600;
+            transition: all 0.15s;
+        }
+        .btn-filter.active, .btn-filter:hover {
+            background: var(--accent-cyan);
+            color: #000;
+            border-color: var(--accent-cyan);
+        }
+
+        /* 2-Column Split Dashboard */
+        .split-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        @media (max-width: 1100px) { .split-grid { grid-template-columns: 1fr; } }
+
+        .panel-box {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 10px 14px;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .panel-header h2 { font-size: 0.92rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .count-pill { font-size: 0.7rem; background: rgba(0, 229, 255, 0.15); color: var(--accent-cyan); padding: 2px 7px; border-radius: 4px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+
+        /* Quant Tables */
+        .table-responsive { overflow-x: auto; max-height: 560px; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.78rem;
+            text-align: left;
+        }
+        th {
+            background: #111b2d;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.7rem;
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            white-space: nowrap;
+        }
+        td {
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+        tr:hover td { background: var(--bg-card-hover); cursor: pointer; }
+
+        .stock-main { display: flex; flex-direction: column; }
+        .stock-title { font-weight: 700; color: var(--text-primary); font-size: 0.84rem; }
+        .stock-sub { font-size: 0.68rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+
+        .math-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+            display: inline-block;
+        }
+        .badge-trend { background: rgba(0, 229, 255, 0.15); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); }
+        .badge-meanrev { background: rgba(167, 139, 250, 0.15); color: var(--accent-purple); border: 1px solid var(--accent-purple); }
+        .badge-random { background: rgba(100, 116, 139, 0.2); color: var(--text-muted); }
+
+        .mono { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; }
+        .stop-text { color: var(--accent-red); font-weight: 600; }
+        .target-text { color: var(--accent-green); font-weight: 600; }
+
+        /* Modal / Detail Drawer */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: var(--bg-surface);
+            border: 1px solid var(--accent-cyan);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 620px;
+            padding: 22px;
+            box-shadow: 0 10px 30px rgba(0, 229, 255, 0.25);
+        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        .modal-header h3 { font-size: 1.05rem; font-weight: 700; }
+        .btn-close { background: none; border: none; color: var(--text-secondary); font-size: 1.4rem; cursor: pointer; }
+
+        .quant-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+            background: var(--bg-card);
+            padding: 12px;
+            border-radius: 8px;
+        }
+        .stat-item .label { font-size: 0.68rem; color: var(--text-muted); margin-bottom: 2px; }
+        .stat-item .val { font-size: 0.95rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+
+        .factor-tag-list { display: flex; flex-direction: column; gap: 6px; }
+        .factor-tag-item {
+            background: var(--bg-card);
+            border-left: 3px solid var(--accent-cyan);
+            padding: 7px 10px;
+            border-radius: 0 5px 5px 0;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(0,0,0,0.2);
+            border-radius: 50%;
+            border-top-color: #000;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="terminal-container">
+        <!-- Header -->
+        <header>
+            <div class="brand-area">
+                <span class="logo-tag">Q-TAP QUANT</span>
+                <span class="brand-title">Quantitative Trading Intelligence Terminal</span>
+                <span class="brand-sub">[Ornstein-Uhlenbeck • Hurst • Carhart • Half-Kelly]</span>
+            </div>
+            <div class="header-actions">
+                <span class="update-pill" id="last-update">초기화 중...</span>
+                <button class="btn-run" id="btn-analyze" onclick="triggerAnalysis()">
+                    <span id="btn-icon">⚡</span>
+                    <span id="btn-text">퀀트 엔진 재연산</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Live Macro Ticker Tape -->
+        <div class="ticker-bar">
+            <div class="ticker-item">
+                <div class="ticker-meta">
+                    <div class="title">VIX 내재변동성</div>
+                    <div class="sub">Implied Volatility</div>
+                </div>
+                <div class="ticker-val">
+                    <div class="num" id="vix-val">14.32</div>
+                    <div class="chg val-cyan" id="vix-chg">VRP 안정</div>
+                </div>
+            </div>
+
+            <div class="ticker-item">
+                <div class="ticker-meta">
+                    <div class="title">AI 거시 감성 지수</div>
+                    <div class="sub">NLP Sentiment Score</div>
+                </div>
+                <div class="ticker-val">
+                    <div class="num" id="sentiment-val">-1.0</div>
+                    <div class="chg val-down" id="sentiment-chg">경계(비관)</div>
+                </div>
+            </div>
+
+            <div class="ticker-item">
+                <div class="ticker-meta">
+                    <div class="title">미 10년물 국채금리</div>
+                    <div class="sub">US 10Y Benchmark</div>
+                </div>
+                <div class="ticker-val">
+                    <div class="num val-gold" id="us10y-val">4.76%</div>
+                    <div class="chg" id="us10y-chg">실질금리 압력</div>
+                </div>
+            </div>
+
+            <div class="ticker-item">
+                <div class="ticker-meta">
+                    <div class="title">원/달러 환율</div>
+                    <div class="sub">USD / KRW</div>
+                </div>
+                <div class="ticker-val">
+                    <div class="num" id="usdkrw-val">1,350.7원</div>
+                    <div class="chg" id="usdkrw-chg">외인 유출입 연동</div>
+                </div>
+            </div>
+
+            <div class="ticker-item">
+                <div class="ticker-meta">
+                    <div class="title">WTI 원유 선물</div>
+                    <div class="sub">Commodity Shock</div>
+                </div>
+                <div class="ticker-val">
+                    <div class="num" id="wti-val">$91.58</div>
+                    <div class="chg val-gold" id="wti-chg">인플레 추적</div>
+                </div>
+            </div>
+
+            <div class="ticker-item">
+                <div class="ticker-meta">
+                    <div class="title">달러 인덱스</div>
+                    <div class="sub">DXY Dollar Index</div>
+                </div>
+                <div class="ticker-val">
+                    <div class="num" id="dxy-val">28.01</div>
+                    <div class="chg val-cyan">유동성 환경</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gate 0 Risk & Market Regime Status Bar -->
+        <div class="status-summary-bar">
+            <div class="gate0-badge-area">
+                <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700;">GATE 0 리스크:</span>
+                <span class="gate0-badge badge-caution" id="gate0-badge">경계 (CAUTION)</span>
+                <span style="font-size: 0.74rem; color: var(--text-secondary);" id="gate0-desc">신규 진입 허용 (노출도 60%)</span>
+            </div>
+
+            <div class="market-regime-tags">
+                <div class="regime-tag" id="regime-sp500-tag">
+                    <span style="color: var(--accent-cyan); font-weight: 700;">🇺🇸 S&P 500:</span> <span id="sp500-regime-text">200일선 하회 (약세 조정)</span>
+                </div>
+                <div class="regime-tag" id="regime-kospi-tag">
+                    <span style="color: var(--accent-purple); font-weight: 700;">🇰🇷 KOSPI:</span> <span id="kospi-regime-text">주요 이평선 하회 (선별 대응)</span>
+                </div>
+            </div>
+
+            <div class="filter-buttons">
+                <button class="btn-filter active" onclick="setFilter('ALL')">전체 유니버스</button>
+                <button class="btn-filter" onclick="setFilter('KR_KOSPI')">🇰🇷 코스피</button>
+                <button class="btn-filter" onclick="setFilter('US_SP500')">🇺🇸 S&P 500</button>
+            </div>
+        </div>
+
+        <!-- 2-Column Split View: Tactical Quant (Left) & Strategic Factor (Right) -->
+        <div class="split-grid">
+            <!-- Left Column: Tactical Quant (Hurst & O-U & Microstructure) -->
+            <div class="panel-box">
+                <div class="panel-header">
+                    <h2>
+                        <span style="color: var(--accent-gold);">⚡</span>
+                        단기 통계적 알파 포착 (Tactical: Hurst & O-U 평균회귀 / 돌파)
+                    </h2>
+                    <span class="count-pill" id="st-count">0개 포착</span>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>종목명 / 티커</th>
+                                <th>통계 국면</th>
+                                <th>승률 P(W)</th>
+                                <th>기대값 E[R]</th>
+                                <th>진입가</th>
+                                <th>손절(VaR99)</th>
+                                <th>목표가</th>
+                                <th>켈리 비중</th>
+                            </tr>
+                        </thead>
+                        <tbody id="st-table-body">
+                            <!-- Dynamic Rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Right Column: Strategic Multi-Factor (Fama-French & Carhart) -->
+            <div class="panel-box">
+                <div class="panel-header">
+                    <h2>
+                        <span style="color: var(--accent-green);">💎</span>
+                        중장기 멀티팩터 퀀트 (Strategic: 파마-프렌치 Quality / Value / Mom)
+                    </h2>
+                    <span class="count-pill" id="lt-count">0개 선별</span>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>종목명 / 티커</th>
+                                <th>복합 스코어</th>
+                                <th>수익성(ROE)</th>
+                                <th>PER(E/P)</th>
+                                <th>진입가</th>
+                                <th>동적 손절선</th>
+                                <th>목표가</th>
+                                <th>켈리 비중</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lt-table-body">
+                            <!-- Dynamic Rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stock Detail Factor Modal -->
+    <div class="modal-overlay" id="factor-modal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3 id="modal-title">수학적 퀀트 모델 검증 리포트</h3>
+                <button class="btn-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modal-body">
+                <!-- Injected details -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        const EMBEDDED_DATA = {"gate0": {"status": "CAUTION", "allow_new_entries": true, "max_portfolio_exposure": 0.6, "reasons": ["정치/경제 뉴스 감성 악화(Score: -1.0) - 무역/전쟁/규제 이슈 주의"], "vix": 14.32, "sentiment_score": -1.0}, "gate1": {"US_SP500": {"regime": "BEAR_DOWNTREND", "price": 7747.71, "sma_50": 7584.49, "sma_200": 7747.71, "desc": "S&P 500 200일선 하회 (약세장 경계 - 롱 진입 축소)"}, "KR_KOSPI": {"regime": "BEAR_DOWNTREND", "price": 6687.21, "sma_50": 6951.02, "sma_200": 6687.21, "desc": "KOSPI 주요 이평선 하회 (단기 수급 집중주만 선별 대응)"}}, "macro_data": {"VIX": {"current": 14.32, "chg_1d_pct": -5.79, "chg_5d_pct": -0.76}, "SP500": {"current": 7747.71, "chg_1d_pct": 1.06, "chg_5d_pct": 0.47}, "KOSPI": {"current": 6687.21, "chg_1d_pct": 1.64, "chg_5d_pct": -1.95}, "US_10Y": {"current": 4.76, "chg_1d_pct": -0.71, "chg_5d_pct": 0.89}, "USDKRW": {"current": 1351.38, "chg_1d_pct": -0.52, "chg_5d_pct": -1.87}, "WTI": {"current": 91.66, "chg_1d_pct": 0.39, "chg_5d_pct": 6.88}, "DXY": {"current": 28.01, "chg_1d_pct": -0.57, "chg_5d_pct": -0.6}}, "short_term_picks": [{"market": "KR_KOSPI", "ticker": "373220", "name": "LG에너지솔루션", "score": 40, "entry_price": 358500.0, "stop_loss": 325446.0, "target_price": 437830.0, "alloc_pct": 3.2, "strategy_type": "모멘텀 추세추종 돌파", "hurst_exponent": 0.427, "ou_z_score": -0.79, "ou_half_life": 17.7, "win_prob_pct": 63.3, "expected_value_pct": 115.22, "var_99": -9.22, "factors": ["기관·외인 동시 순유입 (스마트 머니 쌍끌이 누적)"]}, {"market": "US_SP500", "ticker": "NVDA", "name": "NVIDIA Corporation", "score": 20, "entry_price": 228.45, "stop_loss": 212.69, "target_price": 266.27, "alloc_pct": 4.3, "strategy_type": "모멘텀 추세추종 돌파", "hurst_exponent": 0.383, "ou_z_score": 3.12, "ou_half_life": 60.0, "win_prob_pct": 56.7, "expected_value_pct": 92.78, "var_99": -6.9, "factors": ["RSI 최적 가속 구간 (RSI 52.32)"]}, {"market": "US_SP500", "ticker": "AAPL", "name": "Apple Inc.", "score": 10, "entry_price": 328.21, "stop_loss": 311.37, "target_price": 368.63, "alloc_pct": 5.1, "strategy_type": "모멘텀 추세추종 돌파", "hurst_exponent": 0.409, "ou_z_score": 1.08, "ou_half_life": 60.0, "win_prob_pct": 53.3, "expected_value_pct": 81.22, "var_99": -5.13, "factors": []}, {"market": "US_SP500", "ticker": "MSFT", "name": "Microsoft Corporation", "score": 10, "entry_price": 510.12, "stop_loss": 485.28, "target_price": 569.74, "alloc_pct": 5.4, "strategy_type": "모멘텀 추세추종 돌파", "hurst_exponent": 0.504, "ou_z_score": 1.37, "ou_half_life": 60.0, "win_prob_pct": 53.3, "expected_value_pct": 81.22, "var_99": -4.87, "factors": ["허스트 H=0.504 (랜덤워크 국면 - 통계적 우위 부재)", "RSI 최적 가속 구간 (RSI 59.36)"]}, {"market": "US_SP500", "ticker": "AMZN", "name": "Amazon.com, Inc.", "score": 10, "entry_price": 258.9, "stop_loss": 244.84, "target_price": 292.64, "alloc_pct": 5.0, "strategy_type": "모멘텀 추세추종 돌파", "hurst_exponent": 0.446, "ou_z_score": 1.95, "ou_half_life": 32.0, "win_prob_pct": 53.3, "expected_value_pct": 81.22, "var_99": -5.43, "factors": []}, {"market": "KR_KOSPI", "ticker": "000660", "name": "SK하이닉스", "score": 10, "entry_price": 1647000.0, "stop_loss": 1444419.0, "target_price": 2133194.0, "alloc_pct": 2.0, "strategy_type": "모멘텀 추세추종 돌파", "hurst_exponent": 0.57, "ou_z_score": -0.3, "ou_half_life": 60.0, "win_prob_pct": 53.3, "expected_value_pct": 81.22, "var_99": -12.3, "factors": ["RSI 최적 가속 구간 (RSI 50.15)"]}, {"market": "KR_KOSPI", "ticker": "207940", "name": "삼성바이오로직스", "score": 10, "entry_price": 1447000.0, "stop_loss": 1347012.0, "target_price": 1686971.0, "alloc_pct": 3.1, "strategy_type": "모멘텀 추세추종 돌파", "hurst_exponent": 0.422, "ou_z_score": -3.25, "ou_half_life": 18.1, "win_prob_pct": 53.3, "expected_value_pct": 81.22, "var_99": -6.91, "factors": []}, {"market": "KR_KOSPI", "ticker": "005930", "name": "삼성전자", "score": 0, "entry_price": 255500.0, "stop_loss": 228443.0, "target_price": 320437.0, "alloc_pct": 2.0, "strategy_type": "모멘텀 추세추종 돌파", "hurst_exponent": 0.502, "ou_z_score": -1.82, "ou_half_life": 60.0, "win_prob_pct": 46.7, "expected_value_pct": 58.78, "var_99": -10.59, "factors": ["허스트 H=0.502 (랜덤워크 국면 - 통계적 우위 부재)"]}], "long_term_picks": [{"market": "US_SP500", "ticker": "NVDA", "name": "NVIDIA Corporation", "score": 85, "entry_price": 228.45, "stop_loss": 206.94, "target_price": 297.28, "alloc_pct": 9.0, "strategy_type": "파마-프렌치 멀티팩터 가치성장", "parkinson_vol_pct": 26.9, "carhart_mom_pct": 27.74, "roe_pct": 117.2, "forward_pe": 14.8, "win_prob_pct": 76.3, "expected_value_pct": 220.46, "factors": ["최상위 수익성 팩터 (ROE 117.2%)", "적정 밸류에이션 (이익수익률 6.8%)", "강력한 카하트 중기 모멘텀 (+27.74%)"]}, {"market": "KR_KOSPI", "ticker": "005930", "name": "삼성전자", "score": 80, "entry_price": 255500.0, "stop_loss": 229950.0, "target_price": 337260.0, "alloc_pct": 5.7, "strategy_type": "파마-프렌치 멀티팩터 가치성장", "parkinson_vol_pct": 49.6, "carhart_mom_pct": 226.88, "roe_pct": 30.8, "forward_pe": 3.7, "win_prob_pct": 74.9, "expected_value_pct": 214.58, "factors": ["최상위 수익성 팩터 (ROE 30.8%)", "깊은 저평가 밸류 (이익수익률 27.2%, PER 3.7배)", "강력한 카하트 중기 모멘텀 (+226.88%)", "고변동성 자산 (연환산 49.6%)"]}, {"market": "KR_KOSPI", "ticker": "000660", "name": "SK하이닉스", "score": 80, "entry_price": 1647000.0, "stop_loss": 1482300.0, "target_price": 2174040.0, "alloc_pct": 4.9, "strategy_type": "파마-프렌치 멀티팩터 가치성장", "parkinson_vol_pct": 57.7, "carhart_mom_pct": 498.11, "roe_pct": 92.7, "forward_pe": 3.5, "win_prob_pct": 74.9, "expected_value_pct": 214.58, "factors": ["최상위 수익성 팩터 (ROE 92.7%)", "깊은 저평가 밸류 (이익수익률 28.3%, PER 3.5배)", "강력한 카하트 중기 모멘텀 (+498.11%)", "고변동성 자산 (연환산 57.7%)"]}, {"market": "US_SP500", "ticker": "AAPL", "name": "Apple Inc.", "score": 75, "entry_price": 328.21, "stop_loss": 305.26, "target_price": 401.65, "alloc_pct": 9.0, "strategy_type": "파마-프렌치 멀티팩터 가치성장", "parkinson_vol_pct": 20.0, "carhart_mom_pct": 30.66, "roe_pct": 148.8, "forward_pe": 34.4, "win_prob_pct": 73.4, "expected_value_pct": 208.28, "factors": ["최상위 수익성 팩터 (ROE 148.8%)", "강력한 카하트 중기 모멘텀 (+30.66%)", "파킨슨 저변동성 우량주 (연환산 변동성 20.0%)"]}, {"market": "US_SP500", "ticker": "MSFT", "name": "Microsoft Corporation", "score": 68, "entry_price": 510.12, "stop_loss": 476.66, "target_price": 617.19, "alloc_pct": 9.0, "strategy_type": "파마-프렌치 멀티팩터 가치성장", "parkinson_vol_pct": 18.7, "carhart_mom_pct": -0.97, "roe_pct": 34.0, "forward_pe": 21.6, "win_prob_pct": 71.4, "expected_value_pct": 199.88, "factors": ["최상위 수익성 팩터 (ROE 34.0%)", "적정 밸류에이션 (이익수익률 4.6%)", "파킨슨 저변동성 우량주 (연환산 변동성 18.7%)"]}, {"market": "US_SP500", "ticker": "AMZN", "name": "Amazon.com, Inc.", "score": 65, "entry_price": 258.9, "stop_loss": 240.57, "target_price": 317.56, "alloc_pct": 9.0, "strategy_type": "파마-프렌치 멀티팩터 가치성장", "parkinson_vol_pct": 20.2, "carhart_mom_pct": 15.52, "roe_pct": 30.6, "forward_pe": 24.9, "win_prob_pct": 70.6, "expected_value_pct": 196.52, "factors": ["최상위 수익성 팩터 (ROE 30.6%)", "양호한 카하트 모멘텀 (+15.52%)", "파킨슨 저변동성 우량주 (연환산 변동성 20.2%)"]}, {"market": "KR_KOSPI", "ticker": "207940", "name": "삼성바이오로직스", "score": 32, "entry_price": 1447000.0, "stop_loss": 1302300.0, "target_price": 1910040.0, "alloc_pct": 6.3, "strategy_type": "파마-프렌치 멀티팩터 가치성장", "parkinson_vol_pct": 32.6, "carhart_mom_pct": -4.4, "roe_pct": 18.5, "forward_pe": 29.5, "win_prob_pct": 61.1, "expected_value_pct": 156.62, "factors": ["안정적 수익성 팩터 (ROE 18.5%)"]}, {"market": "KR_KOSPI", "ticker": "373220", "name": "LG에너지솔루션", "score": 0, "entry_price": 358500.0, "stop_loss": 322650.0, "target_price": 473220.0, "alloc_pct": 3.0, "strategy_type": "파마-프렌치 멀티팩터 가치성장", "parkinson_vol_pct": 44.7, "carhart_mom_pct": -6.12, "roe_pct": -5.2, "forward_pe": 45.9, "win_prob_pct": 48.0, "expected_value_pct": 101.6, "factors": ["음(-)의 ROE 페널티", "고변동성 자산 (연환산 44.7%)"]}], "timestamp": "2026-09-04 16:15:27"};
+        let currentFilter = 'ALL';
+        let rawData = EMBEDDED_DATA;
+
+        async function fetchStatus() {
+            try {
+                const resp = await fetch('http://127.0.0.1:5000/api/status');
+                if (resp.ok) {
+                    const live = await resp.json();
+                    rawData = live;
+                    renderDashboard(live);
+                    return;
+                }
+            } catch (err) {
+                // Standalone local file mode
+            }
+            renderDashboard(EMBEDDED_DATA);
+        }
+
+        function formatPrice(val, market) {
+            if (!val && val !== 0) return "-";
+            if (market === "KR_KOSPI") {
+                return Number(val).toLocaleString('ko-KR') + "원";
+            } else {
+                return "$" + Number(val).toFixed(2);
+            }
+        }
+
+        function setFilter(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.btn-filter').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            if (rawData) renderTables(rawData);
+        }
+
+        async function fetchStatus() {
+            try {
+                const resp = await fetch('/api/status');
+                const data = await resp.json();
+                rawData = data;
+                renderDashboard(data);
+            } catch (err) {
+                console.error("Error fetching status:", err);
+            }
+        }
+
+        function renderDashboard(data) {
+            if (!data) return;
+
+            document.getElementById("last-update").innerText = "마지막 연산: " + (data.timestamp || "방금 전");
+
+            const g0 = data.gate0 || {};
+            const badgeEl = document.getElementById("gate0-badge");
+            const descEl = document.getElementById("gate0-desc");
+            const status = g0.status || "NORMAL";
+
+            if (status === "NORMAL") {
+                badgeEl.className = "gate0-badge badge-normal";
+                badgeEl.innerText = "안정 (NORMAL)";
+                descEl.innerText = `신규 진입 정상 (노출도 ${Math.round((g0.max_portfolio_exposure||1)*100)}%)`;
+            } else if (status === "CAUTION") {
+                badgeEl.className = "gate0-badge badge-caution";
+                badgeEl.innerText = "경계 (CAUTION)";
+                descEl.innerText = `신규 진입 허용 (보수적 노출도 ${Math.round((g0.max_portfolio_exposure||0.6)*100)}%)`;
+            } else {
+                badgeEl.className = "gate0-badge badge-blackout";
+                badgeEl.innerText = status;
+                descEl.innerText = "신규 매수 동결 (리스크 오프)";
+            }
+
+            if (g0.vix) document.getElementById("vix-val").innerText = g0.vix.toFixed(2);
+            if (g0.sentiment_score !== undefined) {
+                const s = g0.sentiment_score;
+                document.getElementById("sentiment-val").innerText = (s > 0 ? "+" : "") + s;
+                document.getElementById("sentiment-chg").innerText = s >= 0 ? "중립/긍정" : "경계(비관)";
+            }
+
+            const macro = data.macro_data || {};
+            if (macro.US_10Y) {
+                document.getElementById("us10y-val").innerText = macro.US_10Y.current + "%";
+                document.getElementById("us10y-chg").innerText = `5D: ${macro.US_10Y.chg_5d_pct > 0 ? '+' : ''}${macro.US_10Y.chg_5d_pct}%`;
+            }
+            if (macro.USDKRW) {
+                document.getElementById("usdkrw-val").innerText = Number(macro.USDKRW.current).toLocaleString('ko-KR') + "원";
+                document.getElementById("usdkrw-chg").innerText = `5D: ${macro.USDKRW.chg_5d_pct > 0 ? '+' : ''}${macro.USDKRW.chg_5d_pct}%`;
+            }
+            if (macro.WTI) document.getElementById("wti-val").innerText = "$" + macro.WTI.current;
+            if (macro.DXY) document.getElementById("dxy-val").innerText = macro.DXY.current;
+
+            const g1 = data.gate1 || {};
+            if (g1.US_SP500) document.getElementById("sp500-regime-text").innerText = g1.US_SP500.desc;
+            if (g1.KR_KOSPI) document.getElementById("kospi-regime-text").innerText = g1.KR_KOSPI.desc;
+
+            renderTables(data);
+        }
+
+        function renderTables(data) {
+            const filterFn = p => (currentFilter === 'ALL' || p.market === currentFilter);
+
+            const stPicks = (data.short_term_picks || []).filter(filterFn);
+            const ltPicks = (data.long_term_picks || []).filter(filterFn);
+
+            document.getElementById("st-count").innerText = `${stPicks.length}개 포착`;
+            document.getElementById("lt-count").innerText = `${ltPicks.length}개 선별`;
+
+            // Render Short-Term Tactical Row
+            const renderStRow = p => {
+                const h = p.hurst_exponent || 0.50;
+                let badgeHtml = '';
+                if (h > 0.55) {
+                    badgeHtml = `<span class="math-badge badge-trend">추세지속 (H=${h})</span>`;
+                } else if (h < 0.45) {
+                    badgeHtml = `<span class="math-badge badge-meanrev">평균회귀 (H=${h})</span>`;
+                } else {
+                    badgeHtml = `<span class="math-badge badge-random">랜덤워크 (H=${h})</span>`;
+                }
+
+                const jsonStr = encodeURIComponent(JSON.stringify(p));
+
+                return `
+                    <tr onclick="showModal('${jsonStr}', 'ST')">
+                        <td>
+                            <div class="stock-main">
+                                <span class="stock-title">${p.name}</span>
+                                <span class="stock-sub">${p.market === 'KR_KOSPI' ? '🇰🇷 ' : '🇺🇸 '}${p.ticker}</span>
+                            </div>
+                        </td>
+                        <td>${badgeHtml}</td>
+                        <td class="mono val-up" style="font-weight:700">${p.win_prob_pct || 60}%</td>
+                        <td class="mono val-cyan">+${p.expected_value_pct || 5.0}%</td>
+                        <td class="mono">${formatPrice(p.entry_price, p.market)}</td>
+                        <td class="mono stop-text">${formatPrice(p.stop_loss, p.market)}</td>
+                        <td class="mono target-text">${formatPrice(p.target_price, p.market)}</td>
+                        <td class="mono val-gold" style="font-weight:700;">${p.alloc_pct}%</td>
+                    </tr>
+                `;
+            };
+
+            // Render Long-Term Strategic Row
+            const renderLtRow = p => {
+                const score = p.score || 70;
+                const roeStr = p.roe_pct !== null ? `${p.roe_pct}%` : '-';
+                const peStr = p.forward_pe !== null ? `${p.forward_pe}배` : '-';
+                const jsonStr = encodeURIComponent(JSON.stringify(p));
+
+                return `
+                    <tr onclick="showModal('${jsonStr}', 'LT')">
+                        <td>
+                            <div class="stock-main">
+                                <span class="stock-title">${p.name}</span>
+                                <span class="stock-sub">${p.market === 'KR_KOSPI' ? '🇰🇷 ' : '🇺🇸 '}${p.ticker}</span>
+                            </div>
+                        </td>
+                        <td><span class="math-badge badge-trend">${score}점</span></td>
+                        <td class="mono val-up" style="font-weight:700;">${roeStr}</td>
+                        <td class="mono">${peStr}</td>
+                        <td class="mono">${formatPrice(p.entry_price, p.market)}</td>
+                        <td class="mono stop-text">${formatPrice(p.stop_loss, p.market)}</td>
+                        <td class="mono target-text">${formatPrice(p.target_price, p.market)}</td>
+                        <td class="mono val-gold" style="font-weight:700;">${p.alloc_pct}%</td>
+                    </tr>
+                `;
+            };
+
+            const stBody = document.getElementById("st-table-body");
+            if (stPicks.length === 0) {
+                stBody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 26px; color: var(--text-muted);">조건을 충족하는 단기 통계적 알파 종목이 없습니다 (대기)</td></tr>`;
+            } else {
+                stBody.innerHTML = stPicks.map(renderStRow).join("");
+            }
+
+            const ltBody = document.getElementById("lt-table-body");
+            if (ltPicks.length === 0) {
+                ltBody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 26px; color: var(--text-muted);">조건을 충족하는 멀티팩터 우량 종목이 없습니다</td></tr>`;
+            } else {
+                ltBody.innerHTML = ltPicks.map(renderLtRow).join("");
+            }
+        }
+
+        function showModal(encoded, type) {
+            const p = JSON.parse(decodeURIComponent(encoded));
+            document.getElementById("modal-title").innerText = `${p.name} (${p.ticker}) 퀀트 수학 모델 검증 리포트`;
+            const body = document.getElementById("modal-body");
+
+            const stDetails = `
+                <div class="quant-stats-grid">
+                    <div class="stat-item"><div class="label">허스트 지수 (H)</div><div class="val val-cyan">${p.hurst_exponent || '-'}</div></div>
+                    <div class="stat-item"><div class="label">O-U Z-Score</div><div class="val">${p.ou_z_score ? p.ou_z_score + 'σ' : '-'}</div></div>
+                    <div class="stat-item"><div class="label">평균회귀 반감기 (τ)</div><div class="val">${p.ou_half_life ? p.ou_half_life + '일' : '-'}</div></div>
+                    <div class="stat-item"><div class="label">수학적 승률 P(W)</div><div class="val val-up">${p.win_prob_pct || '-'}%</div></div>
+                    <div class="stat-item"><div class="label">수익 기대값 E[R]</div><div class="val val-gold">+${p.expected_value_pct || '-'}%</div></div>
+                    <div class="stat-item"><div class="label">99% VaR 꼬리위험</div><div class="val stop-text">${p.var_99 ? p.var_99 + '%' : '-'}</div></div>
+                </div>
+            `;
+
+            const ltDetails = `
+                <div class="quant-stats-grid">
+                    <div class="stat-item"><div class="label">파킨슨 극치변동성</div><div class="val val-cyan">${p.parkinson_vol_pct ? p.parkinson_vol_pct + '%' : '-'}</div></div>
+                    <div class="stat-item"><div class="label">카하트 모멘텀 (12M)</div><div class="val val-up">${p.carhart_mom_pct ? '+' + p.carhart_mom_pct + '%' : '-'}</div></div>
+                    <div class="stat-item"><div class="label">자본이익률 (ROE)</div><div class="val val-gold">${p.roe_pct ? p.roe_pct + '%' : '-'}</div></div>
+                    <div class="stat-item"><div class="label">Forward PER</div><div class="val">${p.forward_pe ? p.forward_pe + '배' : '-'}</div></div>
+                    <div class="stat-item"><div class="label">승률 추정 P(W)</div><div class="val val-up">${p.win_prob_pct ? p.win_prob_pct + '%' : '-'}</div></div>
+                    <div class="stat-item"><div class="label">Half-Kelly 최적비중</div><div class="val val-cyan">${p.alloc_pct}%</div></div>
+                </div>
+            `;
+
+            body.innerHTML = `
+                ${type === 'ST' ? stDetails : ltDetails}
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 14px; background: var(--bg-card); padding: 10px; border-radius: 6px;">
+                    <div><span style="font-size:0.68rem; color:var(--text-muted)">진입 권장가</span><br><strong class="mono">${formatPrice(p.entry_price, p.market)}</strong></div>
+                    <div><span style="font-size:0.68rem; color:var(--text-muted)">수학적 손절선</span><br><strong class="mono stop-text">${formatPrice(p.stop_loss, p.market)}</strong></div>
+                    <div><span style="font-size:0.68rem; color:var(--text-muted)">목표 도달가</span><br><strong class="mono target-text">${formatPrice(p.target_price, p.market)}</strong></div>
+                </div>
+                <div style="margin-bottom: 8px; font-weight: 700; font-size: 0.82rem; color: var(--accent-cyan);">통계적 팩터 검증 근거:</div>
+                <div class="factor-tag-list">
+                    ${(p.factors || []).map(f => `<div class="factor-tag-item">&bull; ${f}</div>`).join('')}
+                </div>
+            `;
+            document.getElementById("factor-modal").style.display = "flex";
+        }
+
+        function closeModal(e) {
+            document.getElementById("factor-modal").style.display = "none";
+        }
+
+        async function triggerAnalysis() {
+            const btn = document.getElementById("btn-analyze");
+            const btnText = document.getElementById("btn-text");
+            const btnIcon = document.getElementById("btn-icon");
+
+            btn.disabled = true;
+            btnIcon.innerHTML = `<span class="spinner"></span>`;
+            btnText.innerText = "수학 모델 연산 진행 중...";
+
+            try {
+                const resp = await fetch('/api/analyze', { method: 'POST' });
+                const data = await resp.json();
+                rawData = data;
+                renderDashboard(data);
+            } catch (err) {
+                alert("연산 오류: " + err);
+            } finally {
+                btn.disabled = false;
+                btnIcon.innerHTML = `⚡`;
+                btnText.innerText = "퀀트 엔진 재연산";
+            }
+        }
+
+        // Initialize
+        fetchStatus();
+    </script>
+</body>
+</html>
