@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Q-TAP Quantum Trading Terminal Pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <title>Q-TAP Quantitative Financial Intelligence Terminal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #080c14;
-            --bg-surface: #0f172a;
-            --bg-card: #141e33;
-            --bg-card-hover: #1a2742;
-            --border-color: #1e293b;
-            --border-highlight: #334155;
+            --bg-primary: #070b12;
+            --bg-surface: #0e1626;
+            --bg-card: #131f37;
+            --bg-card-hover: #1b2c4e;
+            --border-color: #1e2e4a;
+            --border-highlight: #2d436b;
             --accent-cyan: #00e5ff;
             --accent-green: #00e676;
             --accent-red: #ff5252;
             --accent-gold: #ffd600;
-            --accent-purple: #818cf8;
+            --accent-purple: #a78bfa;
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
             --text-muted: #64748b;
@@ -25,20 +25,20 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            font-family: 'Pretendard', sans-serif;
             background-color: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100vh;
-            padding: 14px 20px;
+            padding: 12px 18px;
             font-size: 13px;
         }
 
         .terminal-container {
-            max-width: 1560px;
+            max-width: 1620px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 12px;
         }
 
         /* Top Header */
@@ -57,19 +57,18 @@
             background: linear-gradient(135deg, #00e5ff, #818cf8);
             color: #030712;
             font-weight: 800;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             padding: 4px 8px;
             border-radius: 6px;
             font-family: 'JetBrains Mono', monospace;
-            letter-spacing: 0.5px;
         }
         .brand-title { font-size: 1.15rem; font-weight: 800; }
-        .brand-sub { font-size: 0.75rem; color: var(--text-secondary); margin-left: 6px; }
+        .brand-sub { font-size: 0.75rem; color: var(--text-secondary); margin-left: 6px; font-family: 'JetBrains Mono', monospace; }
 
-        .header-actions { display: flex; align-items: center; gap: 14px; }
+        .header-actions { display: flex; align-items: center; gap: 12px; }
         .update-pill {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
+            font-size: 0.74rem;
             color: var(--text-secondary);
             background: rgba(30, 41, 59, 0.6);
             padding: 5px 10px;
@@ -90,7 +89,6 @@
             align-items: center;
             gap: 6px;
             transition: all 0.2s ease;
-            box-shadow: 0 2px 10px rgba(0, 229, 255, 0.2);
         }
         .btn-run:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0, 229, 255, 0.35); }
         .btn-run:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
@@ -98,7 +96,7 @@
         /* Ticker Tape Bar */
         .ticker-bar {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 8px;
         }
 
@@ -106,12 +104,12 @@
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            padding: 9px 12px;
+            padding: 8px 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .ticker-meta .title { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 2px; }
+        .ticker-meta .title { font-size: 0.68rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 2px; }
         .ticker-meta .sub { font-size: 0.68rem; color: var(--text-secondary); }
         .ticker-val { text-align: right; font-family: 'JetBrains Mono', monospace; }
         .ticker-val .num { font-size: 1.05rem; font-weight: 700; }
@@ -128,7 +126,7 @@
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            padding: 10px 16px;
+            padding: 8px 16px;
             display: grid;
             grid-template-columns: auto 1fr auto;
             align-items: center;
@@ -138,17 +136,16 @@
 
         .gate0-badge-area { display: flex; align-items: center; gap: 8px; }
         .gate0-badge {
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.75rem;
+            padding: 3px 9px;
+            border-radius: 5px;
+            font-size: 0.74rem;
             font-weight: 800;
-            letter-spacing: 0.5px;
         }
         .badge-normal { background: rgba(0, 230, 118, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); }
         .badge-caution { background: rgba(255, 214, 0, 0.15); color: var(--accent-gold); border: 1px solid var(--accent-gold); }
         .badge-blackout { background: rgba(255, 82, 82, 0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
 
-        .market-regime-tags { display: flex; align-items: center; gap: 12px; font-size: 0.78rem; }
+        .market-regime-tags { display: flex; align-items: center; gap: 10px; font-size: 0.76rem; }
         .regime-tag { background: var(--bg-card); padding: 4px 8px; border-radius: 5px; border: 1px solid var(--border-highlight); }
 
         .filter-buttons { display: flex; gap: 6px; }
@@ -159,7 +156,7 @@
             padding: 5px 10px;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 0.75rem;
+            font-size: 0.74rem;
             font-weight: 600;
             transition: all 0.15s;
         }
@@ -173,9 +170,9 @@
         .split-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 14px;
+            gap: 12px;
         }
-        @media (max-width: 1080px) { .split-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 1100px) { .split-grid { grid-template-columns: 1fr; } }
 
         .panel-box {
             background: var(--bg-surface);
@@ -187,30 +184,30 @@
         }
 
         .panel-header {
-            padding: 12px 16px;
+            padding: 10px 14px;
             background: var(--bg-card);
             border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .panel-header h2 { font-size: 0.95rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-        .count-pill { font-size: 0.7rem; background: rgba(0, 229, 255, 0.15); color: var(--accent-cyan); padding: 2px 7px; border-radius: 4px; font-weight: 700; }
+        .panel-header h2 { font-size: 0.92rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .count-pill { font-size: 0.7rem; background: rgba(0, 229, 255, 0.15); color: var(--accent-cyan); padding: 2px 7px; border-radius: 4px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
 
-        /* Data Tables */
-        .table-responsive { overflow-x: auto; max-height: 520px; }
+        /* Quant Tables */
+        .table-responsive { overflow-x: auto; max-height: 560px; }
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             text-align: left;
         }
         th {
             background: #111b2d;
             color: var(--text-secondary);
             font-weight: 600;
-            font-size: 0.72rem;
-            padding: 10px 12px;
+            font-size: 0.7rem;
+            padding: 8px 10px;
             border-bottom: 1px solid var(--border-color);
             position: sticky;
             top: 0;
@@ -218,7 +215,7 @@
             white-space: nowrap;
         }
         td {
-            padding: 10px 12px;
+            padding: 8px 10px;
             border-bottom: 1px solid var(--border-color);
             white-space: nowrap;
             vertical-align: middle;
@@ -226,22 +223,22 @@
         tr:hover td { background: var(--bg-card-hover); cursor: pointer; }
 
         .stock-main { display: flex; flex-direction: column; }
-        .stock-title { font-weight: 700; color: var(--text-primary); font-size: 0.85rem; }
-        .stock-sub { font-size: 0.7rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+        .stock-title { font-weight: 700; color: var(--text-primary); font-size: 0.84rem; }
+        .stock-sub { font-size: 0.68rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
 
-        .score-box {
+        .math-badge {
             font-family: 'JetBrains Mono', monospace;
-            font-weight: 700;
-            font-size: 0.8rem;
-            padding: 3px 6px;
+            font-size: 0.7rem;
+            padding: 2px 6px;
             border-radius: 4px;
+            font-weight: 700;
             display: inline-block;
         }
-        .score-high { background: rgba(0, 230, 118, 0.15); color: var(--accent-green); }
-        .score-mid { background: rgba(0, 229, 255, 0.15); color: var(--accent-cyan); }
-        .score-low { background: rgba(255, 214, 0, 0.15); color: var(--accent-gold); }
+        .badge-trend { background: rgba(0, 229, 255, 0.15); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); }
+        .badge-meanrev { background: rgba(167, 139, 250, 0.15); color: var(--accent-purple); border: 1px solid var(--accent-purple); }
+        .badge-random { background: rgba(100, 116, 139, 0.2); color: var(--text-muted); }
 
-        .mono { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; }
+        .mono { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; }
         .stop-text { color: var(--accent-red); font-weight: 600; }
         .target-text { color: var(--accent-green); font-weight: 600; }
 
@@ -250,8 +247,8 @@
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(4px);
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
             z-index: 100;
             justify-content: center;
             align-items: center;
@@ -261,21 +258,33 @@
             border: 1px solid var(--accent-cyan);
             border-radius: 12px;
             width: 90%;
-            max-width: 520px;
-            padding: 24px;
+            max-width: 620px;
+            padding: 22px;
             box-shadow: 0 10px 30px rgba(0, 229, 255, 0.25);
         }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
-        .modal-header h3 { font-size: 1.1rem; font-weight: 700; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        .modal-header h3 { font-size: 1.05rem; font-weight: 700; }
         .btn-close { background: none; border: none; color: var(--text-secondary); font-size: 1.4rem; cursor: pointer; }
 
-        .factor-tag-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+        .quant-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+            background: var(--bg-card);
+            padding: 12px;
+            border-radius: 8px;
+        }
+        .stat-item .label { font-size: 0.68rem; color: var(--text-muted); margin-bottom: 2px; }
+        .stat-item .val { font-size: 0.95rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+
+        .factor-tag-list { display: flex; flex-direction: column; gap: 6px; }
         .factor-tag-item {
             background: var(--bg-card);
             border-left: 3px solid var(--accent-cyan);
-            padding: 8px 12px;
-            border-radius: 0 6px 6px 0;
-            font-size: 0.82rem;
+            padding: 7px 10px;
+            border-radius: 0 5px 5px 0;
+            font-size: 0.8rem;
             color: var(--text-primary);
         }
 
@@ -296,36 +305,36 @@
         <!-- Header -->
         <header>
             <div class="brand-area">
-                <span class="logo-tag">Q-TAP PRO</span>
-                <span class="brand-title">Quantum Trading Terminal</span>
-                <span class="brand-sub">| S&P 500 & KOSPI 100 듀얼-호라이즌 전자동 엔진</span>
+                <span class="logo-tag">Q-TAP QUANT</span>
+                <span class="brand-title">Quantitative Trading Intelligence Terminal</span>
+                <span class="brand-sub">[Ornstein-Uhlenbeck • Hurst • Carhart • Half-Kelly]</span>
             </div>
             <div class="header-actions">
-                <span class="update-pill" id="last-update">업데이트 확인 중...</span>
+                <span class="update-pill" id="last-update">초기화 중...</span>
                 <button class="btn-run" id="btn-analyze" onclick="triggerAnalysis()">
                     <span id="btn-icon">⚡</span>
-                    <span id="btn-text">지금 전체 분석 실행</span>
+                    <span id="btn-text">퀀트 엔진 재연산</span>
                 </button>
             </div>
         </header>
 
-        <!-- Live Macro Ticker Tape (No missing '-') -->
+        <!-- Live Macro Ticker Tape -->
         <div class="ticker-bar">
             <div class="ticker-item">
                 <div class="ticker-meta">
-                    <div class="title">VIX 공포지수</div>
-                    <div class="sub" id="vix-sub">정상 (25 이하)</div>
+                    <div class="title">VIX 내재변동성</div>
+                    <div class="sub">Implied Volatility</div>
                 </div>
                 <div class="ticker-val">
                     <div class="num" id="vix-val">14.32</div>
-                    <div class="chg val-cyan" id="vix-chg">변동성 안정</div>
+                    <div class="chg val-cyan" id="vix-chg">VRP 안정</div>
                 </div>
             </div>
 
             <div class="ticker-item">
                 <div class="ticker-meta">
-                    <div class="title">뉴스 감성 지수</div>
-                    <div class="sub">AI 뉴스 분석</div>
+                    <div class="title">AI 거시 감성 지수</div>
+                    <div class="sub">NLP Sentiment Score</div>
                 </div>
                 <div class="ticker-val">
                     <div class="num" id="sentiment-val">-1.0</div>
@@ -336,11 +345,11 @@
             <div class="ticker-item">
                 <div class="ticker-meta">
                     <div class="title">미 10년물 국채금리</div>
-                    <div class="sub">US 10Y Yield</div>
+                    <div class="sub">US 10Y Benchmark</div>
                 </div>
                 <div class="ticker-val">
                     <div class="num val-gold" id="us10y-val">4.76%</div>
-                    <div class="chg" id="us10y-chg">주간 추세</div>
+                    <div class="chg" id="us10y-chg">실질금리 압력</div>
                 </div>
             </div>
 
@@ -351,14 +360,14 @@
                 </div>
                 <div class="ticker-val">
                     <div class="num" id="usdkrw-val">1,350.7원</div>
-                    <div class="chg" id="usdkrw-chg">KOSPI 수급연동</div>
+                    <div class="chg" id="usdkrw-chg">외인 유출입 연동</div>
                 </div>
             </div>
 
             <div class="ticker-item">
                 <div class="ticker-meta">
-                    <div class="title">WTI 원유</div>
-                    <div class="sub">Crude Oil</div>
+                    <div class="title">WTI 원유 선물</div>
+                    <div class="sub">Commodity Shock</div>
                 </div>
                 <div class="ticker-val">
                     <div class="num" id="wti-val">$91.58</div>
@@ -369,11 +378,11 @@
             <div class="ticker-item">
                 <div class="ticker-meta">
                     <div class="title">달러 인덱스</div>
-                    <div class="sub">DXY</div>
+                    <div class="sub">DXY Dollar Index</div>
                 </div>
                 <div class="ticker-val">
                     <div class="num" id="dxy-val">28.01</div>
-                    <div class="chg val-cyan">글로벌 유동성</div>
+                    <div class="chg val-cyan">유동성 환경</div>
                 </div>
             </div>
         </div>
@@ -381,9 +390,9 @@
         <!-- Gate 0 Risk & Market Regime Status Bar -->
         <div class="status-summary-bar">
             <div class="gate0-badge-area">
-                <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">GATE 0 매크로:</span>
+                <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700;">GATE 0 리스크:</span>
                 <span class="gate0-badge badge-caution" id="gate0-badge">경계 (CAUTION)</span>
-                <span style="font-size: 0.75rem; color: var(--text-secondary);" id="gate0-desc">신규 매수 허용 (권장 비중 60%)</span>
+                <span style="font-size: 0.74rem; color: var(--text-secondary);" id="gate0-desc">신규 진입 허용 (노출도 60%)</span>
             </div>
 
             <div class="market-regime-tags">
@@ -396,20 +405,20 @@
             </div>
 
             <div class="filter-buttons">
-                <button class="btn-filter active" onclick="setFilter('ALL')">전체 시장</button>
-                <button class="btn-filter" onclick="setFilter('KR_KOSPI')">🇰🇷 코스피만</button>
-                <button class="btn-filter" onclick="setFilter('US_SP500')">🇺🇸 S&P 500만</button>
+                <button class="btn-filter active" onclick="setFilter('ALL')">전체 유니버스</button>
+                <button class="btn-filter" onclick="setFilter('KR_KOSPI')">🇰🇷 코스피</button>
+                <button class="btn-filter" onclick="setFilter('US_SP500')">🇺🇸 S&P 500</button>
             </div>
         </div>
 
-        <!-- 2-Column Split View: Tactical (Left) & Strategic (Right) -->
+        <!-- 2-Column Split View: Tactical Quant (Left) & Strategic Factor (Right) -->
         <div class="split-grid">
-            <!-- Left Column: Tactical Short-Term -->
+            <!-- Left Column: Tactical Quant (Hurst & O-U & Microstructure) -->
             <div class="panel-box">
                 <div class="panel-header">
                     <h2>
                         <span style="color: var(--accent-gold);">⚡</span>
-                        단기 모멘텀 포착 (Tactical Picks: 1일 ~ 2주)
+                        단기 통계적 알파 포착 (Tactical: Hurst & O-U 평균회귀 / 돌파)
                     </h2>
                     <span class="count-pill" id="st-count">0개 포착</span>
                 </div>
@@ -418,12 +427,13 @@
                         <thead>
                             <tr>
                                 <th>종목명 / 티커</th>
-                                <th>점수</th>
+                                <th>통계 국면</th>
+                                <th>승률 P(W)</th>
+                                <th>기대값 E[R]</th>
                                 <th>진입가</th>
-                                <th>손절가</th>
+                                <th>손절(VaR99)</th>
                                 <th>목표가</th>
-                                <th>비중</th>
-                                <th>핵심 신호</th>
+                                <th>켈리 비중</th>
                             </tr>
                         </thead>
                         <tbody id="st-table-body">
@@ -433,12 +443,12 @@
                 </div>
             </div>
 
-            <!-- Right Column: Strategic Long-Term -->
+            <!-- Right Column: Strategic Multi-Factor (Fama-French & Carhart) -->
             <div class="panel-box">
                 <div class="panel-header">
                     <h2>
                         <span style="color: var(--accent-green);">💎</span>
-                        중장기 우량 밸류 (Strategic Picks: 3개월 ~ 1년)
+                        중장기 멀티팩터 퀀트 (Strategic: 파마-프렌치 Quality / Value / Mom)
                     </h2>
                     <span class="count-pill" id="lt-count">0개 선별</span>
                 </div>
@@ -447,12 +457,13 @@
                         <thead>
                             <tr>
                                 <th>종목명 / 티커</th>
-                                <th>점수</th>
+                                <th>복합 스코어</th>
+                                <th>수익성(ROE)</th>
+                                <th>PER(E/P)</th>
                                 <th>진입가</th>
-                                <th>손절가</th>
+                                <th>동적 손절선</th>
                                 <th>목표가</th>
-                                <th>비중</th>
-                                <th>핵심 신호</th>
+                                <th>켈리 비중</th>
                             </tr>
                         </thead>
                         <tbody id="lt-table-body">
@@ -468,7 +479,7 @@
     <div class="modal-overlay" id="factor-modal" onclick="closeModal(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">
-                <h3 id="modal-title">종목 상세 팩터 분석</h3>
+                <h3 id="modal-title">수학적 퀀트 모델 검증 리포트</h3>
                 <button class="btn-close" onclick="closeModal()">&times;</button>
             </div>
             <div id="modal-body">
@@ -511,10 +522,8 @@
         function renderDashboard(data) {
             if (!data) return;
 
-            // Timestamp
-            document.getElementById("last-update").innerText = "최근 분석: " + (data.timestamp || "방금 전");
+            document.getElementById("last-update").innerText = "마지막 연산: " + (data.timestamp || "방금 전");
 
-            // Gate 0 Badge
             const g0 = data.gate0 || {};
             const badgeEl = document.getElementById("gate0-badge");
             const descEl = document.getElementById("gate0-desc");
@@ -523,18 +532,17 @@
             if (status === "NORMAL") {
                 badgeEl.className = "gate0-badge badge-normal";
                 badgeEl.innerText = "안정 (NORMAL)";
-                descEl.innerText = `신규 매수 정상 허용 (비중 ${Math.round((g0.max_portfolio_exposure||1)*100)}%)`;
+                descEl.innerText = `신규 진입 정상 (노출도 ${Math.round((g0.max_portfolio_exposure||1)*100)}%)`;
             } else if (status === "CAUTION") {
                 badgeEl.className = "gate0-badge badge-caution";
                 badgeEl.innerText = "경계 (CAUTION)";
-                descEl.innerText = `신규 매수 허용 (보수적 비중 ${Math.round((g0.max_portfolio_exposure||0.6)*100)}%)`;
+                descEl.innerText = `신규 진입 허용 (보수적 노출도 ${Math.round((g0.max_portfolio_exposure||0.6)*100)}%)`;
             } else {
                 badgeEl.className = "gate0-badge badge-blackout";
                 badgeEl.innerText = status;
-                descEl.innerText = "신규 매수 전면 동결 (리스크 회피)";
+                descEl.innerText = "신규 매수 동결 (리스크 오프)";
             }
 
-            // VIX & Sentiment
             if (g0.vix) document.getElementById("vix-val").innerText = g0.vix.toFixed(2);
             if (g0.sentiment_score !== undefined) {
                 const s = g0.sentiment_score;
@@ -542,7 +550,6 @@
                 document.getElementById("sentiment-chg").innerText = s >= 0 ? "중립/긍정" : "경계(비관)";
             }
 
-            // Macro Raw Indicators
             const macro = data.macro_data || {};
             if (macro.US_10Y) {
                 document.getElementById("us10y-val").innerText = macro.US_10Y.current + "%";
@@ -552,19 +559,13 @@
                 document.getElementById("usdkrw-val").innerText = Number(macro.USDKRW.current).toLocaleString('ko-KR') + "원";
                 document.getElementById("usdkrw-chg").innerText = `5D: ${macro.USDKRW.chg_5d_pct > 0 ? '+' : ''}${macro.USDKRW.chg_5d_pct}%`;
             }
-            if (macro.WTI) {
-                document.getElementById("wti-val").innerText = "$" + macro.WTI.current;
-            }
-            if (macro.DXY) {
-                document.getElementById("dxy-val").innerText = macro.DXY.current;
-            }
+            if (macro.WTI) document.getElementById("wti-val").innerText = "$" + macro.WTI.current;
+            if (macro.DXY) document.getElementById("dxy-val").innerText = macro.DXY.current;
 
-            // Gate 1 Regimes
             const g1 = data.gate1 || {};
             if (g1.US_SP500) document.getElementById("sp500-regime-text").innerText = g1.US_SP500.desc;
             if (g1.KR_KOSPI) document.getElementById("kospi-regime-text").innerText = g1.KR_KOSPI.desc;
 
-            // Render tables
             renderTables(data);
         }
 
@@ -577,58 +578,117 @@
             document.getElementById("st-count").innerText = `${stPicks.length}개 포착`;
             document.getElementById("lt-count").innerText = `${ltPicks.length}개 선별`;
 
-            const renderRow = p => {
-                const scoreClass = p.score >= 70 ? 'score-high' : (p.score >= 30 ? 'score-mid' : 'score-low');
-                const firstFactor = (p.factors && p.factors.length > 0) ? p.factors[0] : "추세 지지";
+            // Render Short-Term Tactical Row
+            const renderStRow = p => {
+                const h = p.hurst_exponent || 0.50;
+                let badgeHtml = '';
+                if (h > 0.55) {
+                    badgeHtml = `<span class="math-badge badge-trend">추세지속 (H=${h})</span>`;
+                } else if (h < 0.45) {
+                    badgeHtml = `<span class="math-badge badge-meanrev">평균회귀 (H=${h})</span>`;
+                } else {
+                    badgeHtml = `<span class="math-badge badge-random">랜덤워크 (H=${h})</span>`;
+                }
+
                 const jsonStr = encodeURIComponent(JSON.stringify(p));
 
                 return `
-                    <tr onclick="showModal('${jsonStr}')">
+                    <tr onclick="showModal('${jsonStr}', 'ST')">
                         <td>
                             <div class="stock-main">
                                 <span class="stock-title">${p.name}</span>
                                 <span class="stock-sub">${p.market === 'KR_KOSPI' ? '🇰🇷 ' : '🇺🇸 '}${p.ticker}</span>
                             </div>
                         </td>
-                        <td><span class="score-box ${scoreClass}">${p.score}점</span></td>
+                        <td>${badgeHtml}</td>
+                        <td class="mono val-up" style="font-weight:700">${p.win_prob_pct || 60}%</td>
+                        <td class="mono val-cyan">+${p.expected_value_pct || 5.0}%</td>
                         <td class="mono">${formatPrice(p.entry_price, p.market)}</td>
                         <td class="mono stop-text">${formatPrice(p.stop_loss, p.market)}</td>
                         <td class="mono target-text">${formatPrice(p.target_price, p.market)}</td>
-                        <td class="mono val-cyan" style="font-weight: 700;">${p.alloc_pct}%</td>
-                        <td style="color: var(--text-secondary); font-size: 0.74rem;">${firstFactor}</td>
+                        <td class="mono val-gold" style="font-weight:700;">${p.alloc_pct}%</td>
+                    </tr>
+                `;
+            };
+
+            // Render Long-Term Strategic Row
+            const renderLtRow = p => {
+                const score = p.score || 70;
+                const roeStr = p.roe_pct !== null ? `${p.roe_pct}%` : '-';
+                const peStr = p.forward_pe !== null ? `${p.forward_pe}배` : '-';
+                const jsonStr = encodeURIComponent(JSON.stringify(p));
+
+                return `
+                    <tr onclick="showModal('${jsonStr}', 'LT')">
+                        <td>
+                            <div class="stock-main">
+                                <span class="stock-title">${p.name}</span>
+                                <span class="stock-sub">${p.market === 'KR_KOSPI' ? '🇰🇷 ' : '🇺🇸 '}${p.ticker}</span>
+                            </div>
+                        </td>
+                        <td><span class="math-badge badge-trend">${score}점</span></td>
+                        <td class="mono val-up" style="font-weight:700;">${roeStr}</td>
+                        <td class="mono">${peStr}</td>
+                        <td class="mono">${formatPrice(p.entry_price, p.market)}</td>
+                        <td class="mono stop-text">${formatPrice(p.stop_loss, p.market)}</td>
+                        <td class="mono target-text">${formatPrice(p.target_price, p.market)}</td>
+                        <td class="mono val-gold" style="font-weight:700;">${p.alloc_pct}%</td>
                     </tr>
                 `;
             };
 
             const stBody = document.getElementById("st-table-body");
             if (stPicks.length === 0) {
-                stBody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 28px; color: var(--text-muted);">조건을 충족하는 단기 포착 종목이 없습니다 (관망 구간)</td></tr>`;
+                stBody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 26px; color: var(--text-muted);">조건을 충족하는 단기 통계적 알파 종목이 없습니다 (대기)</td></tr>`;
             } else {
-                stBody.innerHTML = stPicks.map(renderRow).join("");
+                stBody.innerHTML = stPicks.map(renderStRow).join("");
             }
 
             const ltBody = document.getElementById("lt-table-body");
             if (ltPicks.length === 0) {
-                ltBody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 28px; color: var(--text-muted);">조건을 충족하는 중장기 종목이 없습니다</td></tr>`;
+                ltBody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 26px; color: var(--text-muted);">조건을 충족하는 멀티팩터 우량 종목이 없습니다</td></tr>`;
             } else {
-                ltBody.innerHTML = ltPicks.map(renderRow).join("");
+                ltBody.innerHTML = ltPicks.map(renderLtRow).join("");
             }
         }
 
-        function showModal(encoded) {
+        function showModal(encoded, type) {
             const p = JSON.parse(decodeURIComponent(encoded));
-            document.getElementById("modal-title").innerText = `${p.name} (${p.ticker}) 퀀트 분석 근거`;
+            document.getElementById("modal-title").innerText = `${p.name} (${p.ticker}) 퀀트 수학 모델 검증 리포트`;
             const body = document.getElementById("modal-body");
 
-            body.innerHTML = `
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; background: var(--bg-card); padding: 12px; border-radius: 8px;">
-                    <div><span style="font-size:0.7rem; color:var(--text-muted)">진입 권장가</span><br><strong class="mono">${formatPrice(p.entry_price, p.market)}</strong></div>
-                    <div><span style="font-size:0.7rem; color:var(--text-muted)">손절가</span><br><strong class="mono stop-text">${formatPrice(p.stop_loss, p.market)}</strong></div>
-                    <div><span style="font-size:0.7rem; color:var(--text-muted)">목표가</span><br><strong class="mono target-text">${formatPrice(p.target_price, p.market)}</strong></div>
+            const stDetails = `
+                <div class="quant-stats-grid">
+                    <div class="stat-item"><div class="label">허스트 지수 (H)</div><div class="val val-cyan">${p.hurst_exponent || '-'}</div></div>
+                    <div class="stat-item"><div class="label">O-U Z-Score</div><div class="val">${p.ou_z_score ? p.ou_z_score + 'σ' : '-'}</div></div>
+                    <div class="stat-item"><div class="label">평균회귀 반감기 (τ)</div><div class="val">${p.ou_half_life ? p.ou_half_life + '일' : '-'}</div></div>
+                    <div class="stat-item"><div class="label">수학적 승률 P(W)</div><div class="val val-up">${p.win_prob_pct || '-'}%</div></div>
+                    <div class="stat-item"><div class="label">수익 기대값 E[R]</div><div class="val val-gold">+${p.expected_value_pct || '-'}%</div></div>
+                    <div class="stat-item"><div class="label">99% VaR 꼬리위험</div><div class="val stop-text">${p.var_99 ? p.var_99 + '%' : '-'}</div></div>
                 </div>
-                <div style="margin-bottom: 10px; font-weight: 700; font-size: 0.85rem; color: var(--accent-cyan);">포착된 핵심 퀀트 팩터 & 수급:</div>
+            `;
+
+            const ltDetails = `
+                <div class="quant-stats-grid">
+                    <div class="stat-item"><div class="label">파킨슨 극치변동성</div><div class="val val-cyan">${p.parkinson_vol_pct ? p.parkinson_vol_pct + '%' : '-'}</div></div>
+                    <div class="stat-item"><div class="label">카하트 모멘텀 (12M)</div><div class="val val-up">${p.carhart_mom_pct ? '+' + p.carhart_mom_pct + '%' : '-'}</div></div>
+                    <div class="stat-item"><div class="label">자본이익률 (ROE)</div><div class="val val-gold">${p.roe_pct ? p.roe_pct + '%' : '-'}</div></div>
+                    <div class="stat-item"><div class="label">Forward PER</div><div class="val">${p.forward_pe ? p.forward_pe + '배' : '-'}</div></div>
+                    <div class="stat-item"><div class="label">승률 추정 P(W)</div><div class="val val-up">${p.win_prob_pct ? p.win_prob_pct + '%' : '-'}</div></div>
+                    <div class="stat-item"><div class="label">Half-Kelly 최적비중</div><div class="val val-cyan">${p.alloc_pct}%</div></div>
+                </div>
+            `;
+
+            body.innerHTML = `
+                ${type === 'ST' ? stDetails : ltDetails}
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 14px; background: var(--bg-card); padding: 10px; border-radius: 6px;">
+                    <div><span style="font-size:0.68rem; color:var(--text-muted)">진입 권장가</span><br><strong class="mono">${formatPrice(p.entry_price, p.market)}</strong></div>
+                    <div><span style="font-size:0.68rem; color:var(--text-muted)">수학적 손절선</span><br><strong class="mono stop-text">${formatPrice(p.stop_loss, p.market)}</strong></div>
+                    <div><span style="font-size:0.68rem; color:var(--text-muted)">목표 도달가</span><br><strong class="mono target-text">${formatPrice(p.target_price, p.market)}</strong></div>
+                </div>
+                <div style="margin-bottom: 8px; font-weight: 700; font-size: 0.82rem; color: var(--accent-cyan);">통계적 팩터 검증 근거:</div>
                 <div class="factor-tag-list">
-                    ${(p.factors || []).length > 0 ? p.factors.map(f => `<div class="factor-tag-item">&bull; ${f}</div>`).join('') : '<div class="factor-tag-item">&bull; 기술적 이평선 지지 확인</div>'}
+                    ${(p.factors || []).map(f => `<div class="factor-tag-item">&bull; ${f}</div>`).join('')}
                 </div>
             `;
             document.getElementById("factor-modal").style.display = "flex";
@@ -645,7 +705,7 @@
 
             btn.disabled = true;
             btnIcon.innerHTML = `<span class="spinner"></span>`;
-            btnText.innerText = "전체 데이터 분석 진행 중...";
+            btnText.innerText = "수학 모델 연산 진행 중...";
 
             try {
                 const resp = await fetch('/api/analyze', { method: 'POST' });
@@ -653,11 +713,11 @@
                 rawData = data;
                 renderDashboard(data);
             } catch (err) {
-                alert("분석 도중 오류가 발생했습니다: " + err);
+                alert("연산 오류: " + err);
             } finally {
                 btn.disabled = false;
                 btnIcon.innerHTML = `⚡`;
-                btnText.innerText = "지금 전체 분석 실행";
+                btnText.innerText = "퀀트 엔진 재연산";
             }
         }
 

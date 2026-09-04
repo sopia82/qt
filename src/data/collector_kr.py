@@ -5,21 +5,17 @@ import requests
 from bs4 import BeautifulSoup
 import logging
 from src.config import KOSPI_UNIVERSE
-from src.data.collector_us import calculate_technical_indicators
+from src.data.collector_us import calculate_advanced_quant_metrics
 
 logger = logging.getLogger(__name__)
 
 class KRStockCollector:
-    """Collects KOSPI 100 stocks OHLCV, technicals, and Foreigner/Institutional investor flows."""
+    """Collects KOSPI 100 stocks with rigorous mathematical, order flow, and fundamental metrics."""
 
     def __init__(self, tickers=None):
         self.tickers = tickers or KOSPI_UNIVERSE
 
     def fetch_investor_flow(self, code: str) -> dict:
-        """
-        Fetches recent Foreigner & Institutional net buying from Naver Finance.
-        Returns 5-day net buy sums (Foreigner, Institutional) in shares / approximate amounts.
-        """
         url = f"https://finance.naver.com/item/frgn.naver?code={code}"
         headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
         try:
@@ -48,7 +44,7 @@ class KRStockCollector:
                         inst_sum += inst_val
                         foreign_sum += frgn_val
                         count += 1
-                        if count >= 5:  # Last 5 trading days
+                        if count >= 5:  # 5-day cumulative
                             break
                     except ValueError:
                         continue
@@ -63,15 +59,15 @@ class KRStockCollector:
             logger.debug(f"Investor flow fetch fallback for {code}: {e}")
             return {"foreign_net_5d": 0, "inst_net_5d": 0, "dual_buying": False}
 
-    def fetch_stock_data(self, code: str, name: str, period="1y") -> dict:
+    def fetch_stock_data(self, code: str, name: str, period="2y") -> dict:
         yf_ticker = f"{code}.KS"
         try:
             stock = yf.Ticker(yf_ticker)
             hist = stock.history(period=period)
-            if hist.empty or len(hist) < 20:
+            if hist.empty or len(hist) < 30:
                 return {}
 
-            tech = calculate_technical_indicators(hist)
+            tech = calculate_advanced_quant_metrics(hist)
             if not tech:
                 return {}
 
@@ -83,7 +79,9 @@ class KRStockCollector:
                 "trailing_pe": info.get("trailingPE", None),
                 "price_to_book": info.get("priceToBook", None),
                 "roe": info.get("returnOnEquity", None),
-                "market_cap": info.get("marketCap", 0)
+                "market_cap": info.get("marketCap", 0),
+                "profit_margins": info.get("profitMargins", None),
+                "operating_margins": info.get("operatingMargins", None)
             }
 
             return {
@@ -108,8 +106,3 @@ class KRStockCollector:
             if data:
                 results.append(data)
         return results
-
-if __name__ == "__main__":
-    collector = KRStockCollector()
-    sample = collector.fetch_stock_data("005930", "삼성전자")
-    print("Samsung Electronics Sample:", sample)

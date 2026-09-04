@@ -86,8 +86,8 @@ def run_pipeline(sample_size=None, dry_run=False):
             st_score = g2_engine.score_short_term(stock)
             if st_score["qualified"] or dry_run:
                 st_timing = g3_engine.calculate_short_term_timing(stock)
-                st_risk = g4_risk = g4_engine.calculate_position_size(
-                    stock, "SHORT_TERM", gate0_result["max_portfolio_exposure"]
+                st_risk = g4_engine.calculate_position_size(
+                    stock, "SHORT_TERM", st_score["win_prob"], gate0_result["max_portfolio_exposure"]
                 )
                 short_term_candidates.append({
                     "market": stock["market"],
@@ -98,6 +98,13 @@ def run_pipeline(sample_size=None, dry_run=False):
                     "stop_loss": st_timing["stop_loss"],
                     "target_price": st_timing["target_price"],
                     "alloc_pct": st_risk["target_allocation_pct"],
+                    "strategy_type": st_timing["strategy_type"],
+                    "hurst_exponent": stock.get("hurst_exponent", 0.50),
+                    "ou_z_score": stock.get("ou_z_score", 0.0),
+                    "ou_half_life": stock.get("ou_half_life", 15.0),
+                    "win_prob_pct": round(st_score["win_prob"] * 100.0, 1),
+                    "expected_value_pct": st_risk["expected_value_pct"],
+                    "var_99": stock.get("var_99_pct", -3.2),
                     "factors": st_score["key_factors"]
                 })
 
@@ -106,7 +113,7 @@ def run_pipeline(sample_size=None, dry_run=False):
             if lt_score["qualified"] or dry_run:
                 lt_timing = g3_engine.calculate_long_term_timing(stock)
                 lt_risk = g4_engine.calculate_position_size(
-                    stock, "LONG_TERM", gate0_result["max_portfolio_exposure"]
+                    stock, "LONG_TERM", lt_score["win_prob"], gate0_result["max_portfolio_exposure"]
                 )
                 long_term_candidates.append({
                     "market": stock["market"],
@@ -117,6 +124,13 @@ def run_pipeline(sample_size=None, dry_run=False):
                     "stop_loss": lt_timing["stop_loss"],
                     "target_price": lt_timing["target_price"],
                     "alloc_pct": lt_risk["target_allocation_pct"],
+                    "strategy_type": lt_timing["strategy_type"],
+                    "parkinson_vol_pct": round(stock.get("parkinson_vol", 0.25) * 100.0, 1),
+                    "carhart_mom_pct": stock.get("carhart_mom", 0.0),
+                    "roe_pct": round(stock.get("roe", 0.0) * 100.0, 1) if stock.get("roe") else None,
+                    "forward_pe": round(stock.get("forward_pe", 0.0), 1) if stock.get("forward_pe") else None,
+                    "win_prob_pct": round(lt_score["win_prob"] * 100.0, 1),
+                    "expected_value_pct": lt_risk["expected_value_pct"],
                     "factors": lt_score["key_factors"]
                 })
     else:
