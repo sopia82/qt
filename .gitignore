@@ -1,4 +1,4 @@
-﻿# Environment & Secrets
+# Environment & Secrets
 .env
 *.key
 *.pem
@@ -20,6 +20,7 @@ __pycache__/
 data/cache/
 logs/
 *.log
+pyproject.toml.backup
 
 # IDE & OS
 .vscode/

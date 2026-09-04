@@ -1,8 +1,6 @@
 import numpy as np
 import pandas as pd
 from scipy import stats
-import statsmodels.api as sm
-from statsmodels.tsa.stattools import adfuller
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -23,7 +21,6 @@ def calculate_hurst_exponent(price_series: pd.Series, max_lags=30) -> float:
     lagvec = []
 
     for lag in lags:
-        # Array of differences with lag
         diffs = ts[lag:] - ts[:-lag]
         if len(diffs) > 0:
             std = np.std(diffs)
@@ -34,65 +31,59 @@ def calculate_hurst_exponent(price_series: pd.Series, max_lags=30) -> float:
     if len(tau) < 3:
         return 0.50
 
-    # Fit line: log(tau) = H * log(lag) + C
     poly = np.polyfit(np.log(lagvec), np.log(tau), 1)
     hurst = float(poly[0])
     return round(float(np.clip(hurst, 0.05, 0.95)), 3)
 
 def calculate_ou_mean_reversion(price_series: pd.Series) -> dict:
     """
-    Fits an Ornstein-Uhlenbeck (O-U) stochastic process to detect mean reversion:
+    Fits an Ornstein-Uhlenbeck (O-U) stochastic process using pure linear algebra:
     dX_t = theta * (mu - X_t) dt + sigma * dW_t
     Returns:
     - half_life (tau): Expected days for mean reversion = ln(2) / theta
     - z_score: Standardized deviation of current price from moving equilibrium
-    - stationary: Whether ADF test rejects unit root (p-value < 0.05)
+    - stationary: Whether ADF-type t-statistic indicates mean reversion (t < -2.86)
     """
-    ts = price_series.dropna()
-    if len(ts) < 30:
-        return {"half_life": 10.0, "z_score": 0.0, "p_value": 0.5, "stationary": False}
+    ts = price_series.dropna().values
+    n = len(ts)
+    if n < 30:
+        return {"half_life": 10.0, "z_score": 0.0, "stationary": False, "equilibrium_mu": float(ts[-1]) if n > 0 else 100.0}
 
-    # ADF Test for Stationarity
+    x_prev = ts[:-1]
+    dx = ts[1:] - x_prev
+
     try:
-        adf_res = adfuller(ts, autolag="AIC")
-        p_val = round(float(adf_res[1]), 4)
-        stationary = (p_val < 0.05)
-    except Exception:
-        p_val = 0.50
-        stationary = False
-
-    # O-U Regression: delta(X) = a + b * X_{t-1} + e
-    x = ts.values
-    x_prev = x[:-1]
-    dx = x[1:] - x_prev
-
-    X_mat = sm.add_constant(x_prev)
-    try:
-        model = sm.OLS(dx, X_mat).fit()
-        b = model.params[1]
-        a = model.params[0]
+        # Linear regression dx = a + b * x_prev
+        b, a = np.polyfit(x_prev, dx, 1)
         theta = -b
+
+        # Compute t-statistic for stationarity (Dickey-Fuller t-test with constant)
+        res = dx - (a + b * x_prev)
+        s2 = np.sum(res ** 2) / max(n - 3, 1)
+        denom = np.sum((x_prev - np.mean(x_prev)) ** 2)
+        se_b = np.sqrt(s2 / max(denom, 1e-8))
+        t_stat = b / max(se_b, 1e-8)
+        stationary = (t_stat < -2.86)
 
         if theta > 1e-4:
             half_life = np.log(2.0) / theta
-            half_life = min(max(half_life, 1.0), 60.0)  # Capped 1 to 60 days
+            half_life = min(max(half_life, 1.0), 60.0)
             equilibrium_mu = a / theta
         else:
             half_life = 99.0
-            equilibrium_mu = np.mean(x)
+            equilibrium_mu = np.mean(ts)
     except Exception:
         half_life = 20.0
-        equilibrium_mu = np.mean(x)
+        equilibrium_mu = np.mean(ts)
+        stationary = False
 
-    # Calculate Current Z-Score from Equilibrium & Rolling Volatility
-    rolling_std = np.std(x[-30:]) if len(x) >= 30 else (np.std(x) + 1e-6)
-    current_price = x[-1]
+    rolling_std = np.std(ts[-30:]) if n >= 30 else (np.std(ts) + 1e-6)
+    current_price = ts[-1]
     z_score = (current_price - equilibrium_mu) / (rolling_std + 1e-8)
 
     return {
         "half_life": round(float(half_life), 1),
         "z_score": round(float(z_score), 2),
-        "p_value": p_val,
         "stationary": stationary,
         "equilibrium_mu": round(float(equilibrium_mu), 2)
     }
