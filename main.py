@@ -129,6 +129,14 @@ def run_pipeline(sample_size=None, dry_run=False):
     summary = {
         "gate0": gate0_result,
         "gate1": gate1_result,
+        "macro_data": {
+            k: {
+                "current": v["current"],
+                "chg_1d_pct": v.get("chg_1d_pct", 0.0),
+                "chg_5d_pct": v.get("chg_5d_pct", 0.0)
+            }
+            for k, v in macro_data.items()
+        },
         "short_term_picks": short_term_picks,
         "long_term_picks": long_term_picks,
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")

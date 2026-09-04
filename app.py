@@ -40,6 +40,7 @@ def save_analysis(data):
         serializable = {
             "gate0": data.get("gate0", {}),
             "gate1": data.get("gate1", {}),
+            "macro_data": data.get("macro_data", {}),
             "short_term_picks": data.get("short_term_picks", []),
             "long_term_picks": data.get("long_term_picks", []),
             "timestamp": data.get("timestamp", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
